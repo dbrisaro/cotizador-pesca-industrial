@@ -197,12 +197,10 @@ st.divider()
 st.metric("Captura de referencia (baseline)", f"{baseline:,.0f} ton", help=period_label)
 
 # ── KPIs ─────────────────────────────────────────────────────────────────────
-c1, c2, c3, c4, c5 = st.columns(5)
+c1, c2, c3 = st.columns(3)
 c1.metric("Prima pura (AAL)", f"USD {fmt_k(pure_prem_usd)}/año", f"{fmt_pct(aal_pct)} del baseline")
 c2.metric("Prima comercial", f"USD {fmt_k(comm_prem_usd)}/año", f"tasa {fmt_pct(comm_prem_usd / (max_pay_usd or 1))} s/ SA")
 c3.metric("Suma asegurada", f"USD {fmt_k(max_pay_usd)}", f"{fmt_k(max_pay_ton)} ton", help="Pago máximo que recibes si la SST supera T_sal")
-c4.metric("Recargo (gastos + margen)", f"USD {fmt_k(load_usd)}/año", f"{fmt_pct(load_pct)} de la prima comercial")
-c5.metric("Cobertura / Baseline", fmt_pct(cov), f"{fmt_k(max_pay_ton)} ton cubiertas")
 
 st.divider()
 
