@@ -305,13 +305,6 @@ with col_table:
         "captura_real_ton": r["actual"] if r["actual"] is not None else "",
     } for r in sorted_rows])
 
-    st.download_button(
-        "⬇ Descargar CSV",
-        data=download_df.to_csv(index=False).encode("utf-8"),
-        file_name=f"cotizacion_{company.replace(' ', '_')}_{season}.csv",
-        mime="text/csv",
-    )
-
     display_df = download_df.rename(columns={
         "año": "Año", "temporada": "Temp.", "sst_anomalia": "SST (°C)",
         "f_pago": "f pago", "pago_ton": "Pago (ton)",
