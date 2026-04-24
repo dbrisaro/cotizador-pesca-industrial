@@ -98,11 +98,11 @@ with st.sidebar:
     st.markdown("#### Parámetros del trigger")
     entry = st.slider(
         "Anomalía SST entrada T_ent (°C)", 0.0, 2.0, 0.5, 0.1,
-        help="Umbral a partir del cual el seguro empieza a pagar. Si la anomalía SST no supera este valor, el pago es cero.",
+        help="Temperatura a partir de la cual el seguro empieza a pagar. Si la anomalia de la temporada es menor a este valor, el pago es cero. Subirlo hace el contrato menos frecuente y mas barato.",
     )
     exit_ = st.slider(
         "Anomalía SST salida T_sal (°C)", 0.5, 5.0, 2.5, 0.1,
-        help="Nivel de anomalía SST al que se alcanza el pago máximo. Entre T_ent y T_sal el pago crece linealmente.",
+        help="Temperatura a la que el seguro paga el maximo. Entre T_ent y T_sal el pago crece linealmente. Acercarlo a T_ent hace que el seguro sature mas rapido.",
     )
     if exit_ <= entry:
         exit_ = round(entry + 0.1, 1)
@@ -111,17 +111,17 @@ with st.sidebar:
     st.markdown("#### Cobertura y precio")
     cov = st.slider(
         "Cobertura contratada (%)", 10, 100, 80, 5,
-        help="Fracción del baseline cubierta. El pago máximo es cobertura × baseline × precio.",
+        help="Que fraccion del baseline quiere asegurar el cliente. Al 80%, si el baseline es 100,000 ton el pago maximo es 80,000 ton. Reducirlo baja la prima y el pago maximo proporcionalmente.",
     ) / 100
     price = st.number_input(
         "Precio referencia (USD/ton)", 50, 1000, 300, 10,
-        help="Precio de la anchoveta para convertir toneladas a USD.",
+        help="Precio de mercado de la anchoveta usado para convertir toneladas a USD. No afecta las frecuencias ni las fracciones de pago, solo la escala en dolares.",
     )
 
     st.markdown("#### Gastos y margen")
     factor = st.number_input(
         "Factor de carga", 1.0, 3.0, 1.65, 0.05,
-        help="Prima comercial = Prima pura × factor. Un factor de 1.65 implica un loss ratio del 60.6%.",
+        help="Multiplicador sobre la prima pura para cubrir gastos operativos y margen. Factor 1.65 = loss ratio 60.6% (de cada USD de prima, 61 centavos cubren siniestros y 39 son gastos y margen).",
     )
 
     with st.expander("¿Cómo funciona el cotizador?"):
@@ -199,11 +199,9 @@ st.metric(
     f"{baseline:,.0f} ton",
     help=(
         f"{period_label}. "
-        "El baseline es el promedio de captura declarada a la IHMA por empresa y temporada "
-        "sobre todos los anos disponibles (2015-2025). "
-        "Es el nivel de referencia contractual: si la captura real cae por debajo, "
-        "el cliente sufre una perdida. El seguro no cubre la perdida directamente - "
-        "paga segun el indice SST, independientemente de la captura real."
+        "Promedio historico de captura de la empresa segun datos IHMA (2015-2025). "
+        "Es el punto de referencia del contrato: define cuanto es 'captura normal'. "
+        "Ojo: el seguro no paga por caidas en la captura real, paga segun la anomalia de temperatura del mar, independientemente de lo que haya pescado la empresa ese ano."
     )
 )
 
@@ -211,10 +209,14 @@ st.metric(
 leverage = max_pay_usd / comm_prem_usd if comm_prem_usd > 0 else 0
 
 c1, c2, c3, c4 = st.columns(4)
-c1.metric("Prima pura (AAL)", f"USD {fmt_k(pure_prem_usd)}/año", help=f"{fmt_pct(aal_pct)} del baseline")
-c2.metric("Prima comercial", f"USD {fmt_k(comm_prem_usd)}/año", help=f"tasa {fmt_pct(comm_prem_usd / (max_pay_usd or 1))} s/ suma asegurada")
-c3.metric("Suma asegurada", f"USD {fmt_k(max_pay_usd)}", help=f"{fmt_k(max_pay_ton)} ton - pago maximo si SST supera T_sal")
-c4.metric("Cobertura / prima", f"{leverage:.1f}x", help="Cuantas veces la prima comercial podes recibir en el peor caso")
+c1.metric("Prima pura (AAL)", f"USD {fmt_k(pure_prem_usd)}/año",
+    help=f"Costo actuarial del contrato: promedio de lo que habria pagado el seguro por ano sobre el historico 2002-2025. Representa el {fmt_pct(aal_pct)} del baseline. No incluye gastos ni margen.")
+c2.metric("Prima comercial", f"USD {fmt_k(comm_prem_usd)}/año",
+    help=f"Lo que paga el cliente. Es la prima pura x factor de carga ({factor:.2f}). Equivale al {fmt_pct(comm_prem_usd / (max_pay_usd or 1))} de la suma asegurada.")
+c3.metric("Suma asegurada", f"USD {fmt_k(max_pay_usd)}",
+    help=f"Pago maximo que recibe el cliente si la SST supera T_sal. Equivale a {fmt_k(max_pay_ton)} toneladas al precio de referencia ingresado.")
+c4.metric("Cobertura / prima", f"{leverage:.1f}x",
+    help=f"Suma asegurada dividida la prima comercial. Por cada USD que paga el cliente, tiene hasta {leverage:.1f} USD de cobertura.")
 
 st.divider()
 
