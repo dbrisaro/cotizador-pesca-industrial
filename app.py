@@ -24,6 +24,7 @@ h3 { font-size: 1.3rem !important; margin-bottom: 0.2rem !important; }
 header[data-testid="stHeader"] { height: 2.5rem !important; }
 [data-testid="stAppViewContainer"] > section > div { gap: 0.5rem !important; }
 div[data-testid="stVerticalBlock"] { gap: 0.4rem !important; }
+[data-testid="stPlotlyChart"] { margin-top: 0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -234,7 +235,7 @@ BARS_HELP = (
 
 CHART_TITLE_STYLE = (
     "font-size:15px;font-weight:600;color:#141414;"
-    "height:22px;line-height:22px;margin:0;padding:0;"
+    "height:22px;line-height:22px;margin:0 0 8px 0;padding:0;"
 )
 
 with col_bars:
