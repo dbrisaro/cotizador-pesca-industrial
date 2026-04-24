@@ -328,6 +328,12 @@ with col_table:
 
     styled = (
         display_df.style
+        .format({
+            "SST (°C)":   "{:.2f}",
+            "f pago":     "{:.2f}",
+            "Pago (ton)": "{:.0f}",
+            "Pago (USD)": "{:.0f}",
+        })
         .map(color_sst, subset=["SST (°C)"])
         .map(color_pago, subset=["Pago (ton)", "Pago (USD)"])
     )
