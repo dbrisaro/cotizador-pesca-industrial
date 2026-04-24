@@ -14,7 +14,7 @@ st.markdown("""
 <style>
 /* Page */
 .stApp, .stApp * { background-color: transparent; font-family: 'Helvetica Neue', Arial, sans-serif !important; }
-.stApp { background-color: #F7F7F5; }
+.stApp { background-color: #FFFFFF; }
 
 /* Sidebar */
 section[data-testid="stSidebar"] > div:first-child {
@@ -44,15 +44,16 @@ section[data-testid="stSidebar"] .stNumberInput label {
 }
 
 /* Slider accent color */
-.stSlider [data-baseweb="slider"] [role="slider"] { background: #43A047 !important; }
-.stSlider [data-baseweb="slider"] div[data-testid="stThumbValue"] { color: #43A047 !important; }
+.stSlider [data-baseweb="slider"] [role="slider"] { background: #141414 !important; }
+.stSlider [data-baseweb="slider"] div[data-testid="stThumbValue"] { color: #141414 !important; }
+.stSlider [data-baseweb="slider"] [data-testid="stSlider"] div[style*="background"] { background: #141414 !important; }
 
 /* Main content top padding */
 .block-container { padding-top: 1rem !important; max-width: 100% !important; }
 
 /* Baseline box */
 .baseline-box {
-    background: #F7F7F5;
+    background: #F5F5F5;
     border-radius: 6px;
     padding: 10px 12px;
     margin-bottom: 16px;
@@ -83,7 +84,7 @@ section[data-testid="stSidebar"] .stNumberInput label {
     text-align: left; font-weight: 600; font-size: 10px;
     text-transform: uppercase; letter-spacing: 0.4px;
 }
-.styled-table tbody tr:nth-child(even) { background: #F7F7F5; }
+.styled-table tbody tr:nth-child(even) { background: #F5F5F5; }
 .styled-table tbody tr.loss-row { background: #fff8f0 !important; }
 .styled-table tbody td { padding: 5px 8px; border-bottom: 1px solid #E0E0E0; color: #141414; }
 .styled-table .sst-warm { color: #c62828; font-weight: 600; }
@@ -137,8 +138,8 @@ def baseline_period(company, season, actuals_df, all_label):
         return ""
     years = sorted(sub["year"].unique())
     n = len(years)
-    unit = "anos" if season == "both" else "temporadas"
-    freq = "por ano" if season == "both" else "por temporada"
+    unit = "años" if season == "both" else "temporadas"
+    freq = "por año" if season == "both" else "por temporada"
     return f"media {years[0]}-{years[-1]}, {n} {unit} - {freq}"
 
 
@@ -291,17 +292,17 @@ st.markdown(f"""
   </div>
   <div class="kpi">
     <div class="kpi-label">Prima pura (AAL)</div>
-    <div class="kpi-val green">USD {fmt_k(pure_prem_usd)}/ano</div>
+    <div class="kpi-val green">USD {fmt_k(pure_prem_usd)}/año</div>
     <div class="kpi-sub">{fmt_pct(aal_pct)} del baseline · {fmt_k(aal_ton)} ton</div>
   </div>
   <div class="kpi">
     <div class="kpi-label">Prima comercial</div>
-    <div class="kpi-val">USD {fmt_k(comm_prem_usd)}/ano</div>
+    <div class="kpi-val">USD {fmt_k(comm_prem_usd)}/año</div>
     <div class="kpi-sub">tasa {fmt_pct(comm_prem_usd / (max_pay_usd or 1))} s/ suma asegurada</div>
   </div>
   <div class="kpi">
     <div class="kpi-label">Carga (gastos + margen)</div>
-    <div class="kpi-val">USD {fmt_k(load_usd)}/ano</div>
+    <div class="kpi-val">USD {fmt_k(load_usd)}/año</div>
     <div class="kpi-sub">{fmt_pct(load_pct)} de la prima comercial</div>
   </div>
 </div>
