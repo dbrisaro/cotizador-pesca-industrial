@@ -251,11 +251,11 @@ with col_chart:
             cold_x.append(r["sst"]); cold_y.append(r["paton"])
 
     fig.add_trace(go.Scatter(
-        x=cold_x, y=cold_y, mode="markers", name="Temporada fría",
+        x=cold_x, y=cold_y, mode="markers", name="Sin activacion (SST < T_ent)",
         marker=dict(color="#90A4AE", size=8, line=dict(color="white", width=1.5)),
     ))
     fig.add_trace(go.Scatter(
-        x=warm_x, y=warm_y, mode="markers+text", name="Temporada cálida",
+        x=warm_x, y=warm_y, mode="markers+text", name="Con pago (SST >= T_ent)",
         text=warm_txt, textposition="top right", textfont=dict(size=9, color="#141414"),
         marker=dict(color="#FF8F00", size=8, line=dict(color="white", width=1.5)),
     ))
