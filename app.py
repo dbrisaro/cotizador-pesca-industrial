@@ -198,7 +198,7 @@ c1, c2, c3, c4 = st.columns(4)
 c1.metric("Pago máximo", f"{fmt_k(max_pay_ton)} ton", f"USD {fmt_k(max_pay_usd)}")
 c2.metric("Prima pura (AAL)", f"USD {fmt_k(pure_prem_usd)}/año", f"{fmt_pct(aal_pct)} del baseline")
 c3.metric("Prima comercial", f"USD {fmt_k(comm_prem_usd)}/año", f"tasa {fmt_pct(comm_prem_usd / (max_pay_usd or 1))} s/ SA")
-c4.metric("Loading", f"USD {fmt_k(load_usd)}/año", f"{fmt_pct(load_pct)} de la prima comercial")
+c4.metric("Recargo (gastos + margen)", f"USD {fmt_k(load_usd)}/año", f"{fmt_pct(load_pct)} de la prima comercial")
 
 st.divider()
 
