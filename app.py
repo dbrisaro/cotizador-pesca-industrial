@@ -232,7 +232,14 @@ BARS_HELP = (
     "Datos de captura real disponibles desde 2016."
 )
 
+CHART_TITLE_STYLE = (
+    "font-size:15px;font-weight:600;color:#141414;"
+    "height:22px;line-height:22px;margin:0;padding:0;"
+)
+
 with col_bars:
+    st.markdown(f'<p style="{CHART_TITLE_STYLE}">Historial de pagos paramétricos</p>',
+                unsafe_allow_html=True)
 
     all_years = sorted(set(r["year"] for r in rows))
     if "year_from" not in st.session_state:
@@ -275,16 +282,13 @@ with col_bars:
     fig2.update_layout(
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#FFFFFF",
-        title=dict(text="Historial de pagos paramétricos",
-                   font=dict(size=13, color="#141414"), x=0, xanchor="left",
-                   pad=dict(l=0, t=4)),
         xaxis=dict(title="Temporada", gridcolor="#F0F0F0", linecolor="#E0E0E0",
                    tickfont=dict(size=9), tickangle=0),
         yaxis=dict(title="Toneladas", range=[0, shared_ymax],
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
-        legend=dict(orientation="h", x=0, y=1.15, font=dict(size=10),
+        legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
                     bgcolor="rgba(255,255,255,0)"),
-        margin=dict(l=70, r=10, t=90, b=35),
+        margin=dict(l=70, r=10, t=45, b=35),
         height=420,
         font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
         barmode="group",
@@ -296,6 +300,9 @@ with col_bars:
     )
 
 with col_ramp:
+    st.markdown(f'<p style="{CHART_TITLE_STYLE}">Curva de pago vs anomalía SST</p>',
+                unsafe_allow_html=True)
+
     sst_range = np.arange(-1.5, 5.25, 0.05)
     ramp_y    = [baseline * cov * payout_frac(s, entry, exit_) for s in sst_range]
     ols_y     = [baseline * cov * ols_loss_frac(s, BETA) for s in sst_range]
@@ -361,16 +368,13 @@ with col_ramp:
     fig.update_layout(
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#FFFFFF",
-        title=dict(text="Curva de pago vs anomalía SST",
-                   font=dict(size=13, color="#141414"), x=0, xanchor="left",
-                   pad=dict(l=0, t=4)),
         xaxis=dict(title="Anomalía SST (°C)", range=[-1.5, 5.2],
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
         yaxis=dict(title="Pago (ton)", range=[0, shared_ymax],
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
-        legend=dict(orientation="h", x=0, y=1.15, font=dict(size=10),
+        legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
                     bgcolor="rgba(255,255,255,0)"),
-        margin=dict(l=70, r=10, t=90, b=30),
+        margin=dict(l=70, r=10, t=45, b=30),
         height=420,
         font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
     )
