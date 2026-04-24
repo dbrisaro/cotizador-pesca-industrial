@@ -223,19 +223,16 @@ st.divider()
 # ── Charts row ────────────────────────────────────────────────────────────────
 col_bars, col_ramp = st.columns([1, 1], gap="large")
 
+BARS_HELP = (
+    "Barras verdes: lo que habria pagado el seguro con los parametros actuales en cada temporada historica. "
+    "Barras grises: temporadas donde el SST no supero T_ent y el seguro no se activa. "
+    "Barras rojas: perdida real de captura (baseline - captura IHMA). "
+    "Cuando una barra verde y una roja coinciden, el seguro habria compensado la perdida real. "
+    "Cuando hay rojo sin verde (o verde sin rojo), hay basis risk: el indice y la perdida real no coinciden. "
+    "Datos de captura real disponibles desde 2016."
+)
+
 with col_bars:
-    # ── Time series chart ─────────────────────────────────────────────────────
-    st.subheader(
-        "Pago paramétrico y pérdida real por temporada",
-        help=(
-            "Barras verdes: lo que habria pagado el seguro con los parametros actuales en cada temporada historica. "
-            "Barras grises: temporadas donde el SST no supero T_ent y el seguro no se activa. "
-            "Barras rojas: perdida real de captura (baseline - captura IHMA). "
-            "Cuando una barra verde y una roja coinciden, el seguro habria compensado la perdida real. "
-            "Cuando hay rojo sin verde (o verde sin rojo), hay basis risk: el indice y la perdida real no coinciden. "
-            "Datos de captura real disponibles desde 2016."
-        )
-    )
 
     all_years = sorted(set(r["year"] for r in rows))
     if "year_from" not in st.session_state:
@@ -278,12 +275,15 @@ with col_bars:
     fig2.update_layout(
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#FFFFFF",
+        title=dict(text="Historial de pagos paramétricos",
+                   font=dict(size=13, color="#141414"), x=0, xanchor="left",
+                   pad=dict(l=0, t=0)),
         xaxis=dict(gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=9), tickangle=-45),
         yaxis=dict(title="Toneladas", range=[0, shared_ymax],
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
-        legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
+        legend=dict(orientation="h", x=0, y=1.18, font=dict(size=10),
                     bgcolor="rgba(255,255,255,0)"),
-        margin=dict(l=70, r=10, t=30, b=20),
+        margin=dict(l=70, r=10, t=70, b=20),
         height=420,
         font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
         barmode="group",
@@ -295,8 +295,6 @@ with col_bars:
     )
 
 with col_ramp:
-    st.subheader("Curva de pago vs anomalía SST")
-
     sst_range = np.arange(-1.5, 5.25, 0.05)
     ramp_y    = [baseline * cov * payout_frac(s, entry, exit_) for s in sst_range]
     ols_y     = [baseline * cov * ols_loss_frac(s, BETA) for s in sst_range]
@@ -362,13 +360,16 @@ with col_ramp:
     fig.update_layout(
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#FFFFFF",
+        title=dict(text="Curva de pago vs anomalía SST",
+                   font=dict(size=13, color="#141414"), x=0, xanchor="left",
+                   pad=dict(l=0, t=0)),
         xaxis=dict(title="Anomalía SST (°C)", range=[-1.5, 5.2],
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
         yaxis=dict(title="Pago (ton)", range=[0, shared_ymax],
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
-        legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
+        legend=dict(orientation="h", x=0, y=1.18, font=dict(size=10),
                     bgcolor="rgba(255,255,255,0)"),
-        margin=dict(l=70, r=10, t=30, b=10),
+        margin=dict(l=70, r=10, t=70, b=10),
         height=420,
         font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
     )
