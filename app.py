@@ -11,8 +11,9 @@ BETA = -0.816
 
 st.markdown("""
 <style>
-html, body, [class*="css"] {
-    font-family: 'Helvetica Neue', Arial, sans-serif !important;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+html, body, [class*="css"], * {
+    font-family: 'Helvetica Neue', 'Inter', Arial, sans-serif !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -289,7 +290,7 @@ with col_table:
         "año":              r["year"],
         "temporada":        r["tipo"],
         "sst_anomalia":     round(r["sst"], 3),
-        "f_pago":           round(r["f"], 4),
+        "f_pago":           round(r["f"], 3),
         "pago_ton":         round(r["paton"], 1),
         "pago_usd":         round(r["pausd"], 0),
         "captura_real_ton": r["actual"] if r["actual"] is not None else "",
