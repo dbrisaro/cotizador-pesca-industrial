@@ -193,7 +193,7 @@ c1, c2, c3, c4 = st.columns(4)
 c1.metric("Pago máximo", f"{fmt_k(max_pay_ton)} ton", f"USD {fmt_k(max_pay_usd)}")
 c2.metric("Prima pura (AAL)", f"USD {fmt_k(pure_prem_usd)}/año", f"{fmt_pct(aal_pct)} del baseline")
 c3.metric("Prima comercial", f"USD {fmt_k(comm_prem_usd)}/año", f"tasa {fmt_pct(comm_prem_usd / (max_pay_usd or 1))} s/ SA")
-c4.metric("Carga", f"USD {fmt_k(load_usd)}/año", f"{fmt_pct(load_pct)} de la prima")
+c4.metric("Gastos y margen", f"USD {fmt_k(load_usd)}/año", f"{fmt_pct(load_pct)} de la prima comercial")
 
 st.divider()
 
@@ -331,8 +331,9 @@ with col_table:
         .format({
             "SST (°C)":   "{:.2f}",
             "f pago":     "{:.2f}",
-            "Pago (ton)": "{:.0f}",
-            "Pago (USD)": "{:.0f}",
+            "Pago (ton)": "{:,.0f}",
+            "Pago (USD)": "{:,.0f}",
+            "Captura real": lambda v: f"{v:,.0f}" if isinstance(v, (int, float)) else v,
         })
         .map(color_sst, subset=["SST (°C)"])
         .map(color_pago, subset=["Pago (ton)", "Pago (USD)"])
