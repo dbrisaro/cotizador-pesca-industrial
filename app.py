@@ -21,26 +21,27 @@ section[data-testid="stSidebar"] > div:first-child {
     background-color: #FFFFFF;
     border-right: 1px solid #E0E0E0;
 }
-section[data-testid="stSidebar"],
-section[data-testid="stSidebar"] * {
+section[data-testid="stSidebar"] {
     font-family: 'Helvetica Neue', Arial, sans-serif !important;
-    font-size: 13px;
-    color: #141414;
 }
 section[data-testid="stSidebar"] label,
 section[data-testid="stSidebar"] .stSelectbox label,
 section[data-testid="stSidebar"] .stSlider label,
-section[data-testid="stSidebar"] .stNumberInput label {
+section[data-testid="stSidebar"] .stNumberInput label,
+section[data-testid="stSidebar"] p {
     font-size: 13px !important;
     color: #555555 !important;
+    font-family: 'Helvetica Neue', Arial, sans-serif !important;
 }
 
 /* Sidebar section titles */
 .section-title {
-    font-size: 10px; font-weight: 700; text-transform: uppercase;
-    color: #9E9E9E; letter-spacing: 0.8px;
-    margin: 16px 0 8px; padding-bottom: 4px;
-    border-bottom: 1px solid #E0E0E0;
+    font-size: 10px !important; font-weight: 700 !important;
+    text-transform: uppercase !important;
+    color: #9E9E9E !important; letter-spacing: 0.8px;
+    margin: 20px 0 6px !important; padding-bottom: 5px !important;
+    border-bottom: 1px solid #E0E0E0 !important;
+    display: block;
 }
 
 /* Slider: thumb */
