@@ -6,7 +6,7 @@ from pathlib import Path
 
 st.set_page_config(page_title="Cotizador Paramétrico - Anchoveta Perú", layout="wide")
 
-DATA_DIR = Path(__file__).parent / "data"
+DATA_DIR = Path(__file__).parent / "data"  # actuals updated 2025-04-24: added 2024-T1
 BETA = -0.816
 
 st.markdown("""
