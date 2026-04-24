@@ -307,7 +307,14 @@ with col_chart:
     # ── Time series chart ─────────────────────────────────────────────────────
     st.subheader("Pago paramétrico y pérdida real por temporada")
 
-    ts_rows = sorted(rows, key=lambda r: (r["year"], r["tipo"]))
+    all_years = sorted(set(r["year"] for r in rows))
+    year_from = st.select_slider(
+        "Desde", options=all_years, value=2015, label_visibility="collapsed",
+        key="year_from",
+        help="Arrastra para cambiar el año de inicio del grafico"
+    )
+
+    ts_rows = sorted([r for r in rows if r["year"] >= year_from], key=lambda r: (r["year"], r["tipo"]))
     x_labels = [f"{r['year']} {r['tipo']}" if season == "both" else str(r["year"]) for r in ts_rows]
 
     bar_colors = ["#43A047" if r["f"] > 0 else "#E0E0E0" for r in ts_rows]
