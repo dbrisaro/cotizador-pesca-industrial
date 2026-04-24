@@ -43,10 +43,12 @@ section[data-testid="stSidebar"] .stNumberInput label {
     border-bottom: 1px solid #E0E0E0;
 }
 
-/* Slider accent color */
-.stSlider [data-baseweb="slider"] [role="slider"] { background: #141414 !important; }
-.stSlider [data-baseweb="slider"] div[data-testid="stThumbValue"] { color: #141414 !important; }
-.stSlider [data-baseweb="slider"] [data-testid="stSlider"] div[style*="background"] { background: #141414 !important; }
+/* Slider: thumb */
+.stSlider [data-baseweb="slider"] [role="slider"] { background: #43A047 !important; }
+.stSlider [data-baseweb="slider"] div[data-testid="stThumbValue"] { color: #43A047 !important; }
+/* Slider: filled track (the bar that moves) */
+.stSlider [data-baseweb="slider"] > div > div:nth-child(2) { background: #43A047 !important; }
+.stSlider [data-baseweb="slider"] div[style*="background-color: rgb"] { background-color: #43A047 !important; }
 
 /* Main content top padding */
 .block-container { padding-top: 1rem !important; max-width: 100% !important; }
