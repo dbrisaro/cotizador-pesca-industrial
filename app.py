@@ -9,103 +9,11 @@ st.set_page_config(page_title="Cotizador Paramétrico — Anchoveta Perú", layo
 DATA_DIR = Path(__file__).parent / "data"
 BETA = -0.816
 
-# ── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-/* Page */
-.stApp, .stApp * { background-color: transparent; font-family: 'Helvetica Neue', Arial, sans-serif !important; }
-.stApp { background-color: #FFFFFF; }
-
-/* Sidebar */
-section[data-testid="stSidebar"] > div:first-child {
-    background-color: #FFFFFF;
-    border-right: 1px solid #E0E0E0;
-}
-section[data-testid="stSidebar"] {
+html, body, [class*="css"] {
     font-family: 'Helvetica Neue', Arial, sans-serif !important;
 }
-section[data-testid="stSidebar"] label,
-section[data-testid="stSidebar"] .stSelectbox label,
-section[data-testid="stSidebar"] .stSlider label,
-section[data-testid="stSidebar"] .stNumberInput label,
-section[data-testid="stSidebar"] p {
-    font-size: 13px !important;
-    color: #555555 !important;
-    font-family: 'Helvetica Neue', Arial, sans-serif !important;
-}
-
-/* Sidebar section titles */
-.section-title {
-    font-size: 10px !important; font-weight: 700 !important;
-    text-transform: uppercase !important;
-    color: #9E9E9E !important; letter-spacing: 0.8px;
-    margin: 20px 0 6px !important; padding-bottom: 5px !important;
-    border-bottom: 1px solid #E0E0E0 !important;
-    display: block;
-}
-
-/* Slider: thumb and filled track */
-.stSlider [data-baseweb="slider"] [role="slider"] { background: #43A047 !important; }
-.stSlider [data-baseweb="slider"] > div > div:nth-child(2) { background: #43A047 !important; }
-.stSlider [data-baseweb="slider"] div[style*="background-color: rgb"] { background-color: #43A047 !important; }
-/* Slider: remove green hover highlight on tick numbers */
-.stSlider [data-testid="stThumbValue"] {
-    color: #555555 !important;
-    background: #F5F5F5 !important;
-}
-.stSlider [data-baseweb="slider"] [role="slider"]:focus { outline: none !important; box-shadow: none !important; }
-
-/* Hide sidebar collapse button and keyboard shortcut icons */
-[data-testid="stSidebarCollapseButton"] { display: none !important; }
-[data-testid="collapsedControl"] { display: none !important; }
-button[data-testid="baseButton-headerNoPadding"] { display: none !important; }
-kbd { display: none !important; }
-
-/* Main content top padding */
-.block-container { padding-top: 1rem !important; max-width: 100% !important; }
-
-/* Baseline box */
-.baseline-box {
-    background: #F5F5F5;
-    border-radius: 6px;
-    padding: 10px 12px;
-    margin-bottom: 16px;
-    border-left: 3px solid #43A047;
-}
-.baseline-box .bl-label { font-size: 10px; color: #9E9E9E; margin-bottom: 2px; }
-.baseline-box .bl-val { font-size: 18px; font-weight: 700; color: #141414; }
-.baseline-box .bl-period { font-size: 11px; color: #9E9E9E; margin-top: 2px; }
-
-/* KPI strip */
-.kpi-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: #E0E0E0; border: 1px solid #E0E0E0; border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
-.kpi { background: #FFFFFF; padding: 12px 16px; }
-.kpi .kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: #9E9E9E; margin-bottom: 4px; }
-.kpi .kpi-val { font-size: 20px; font-weight: 700; color: #141414; }
-.kpi .kpi-val.green { color: #43A047; }
-.kpi .kpi-sub { font-size: 11px; color: #555555; margin-top: 2px; }
-
-/* Panel titles */
-.panel-title {
-    font-size: 11px; font-weight: 700; color: #555555;
-    text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;
-}
-
-/* Custom table */
-.styled-table { width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #E0E0E0; border-radius: 4px; overflow: hidden; }
-.styled-table thead th {
-    background: #111111; color: white; padding: 6px 8px;
-    text-align: left; font-weight: 600; font-size: 10px;
-    text-transform: uppercase; letter-spacing: 0.4px;
-}
-.styled-table tbody tr:nth-child(even) { background: #F5F5F5; }
-.styled-table tbody tr.loss-row { background: #fff8f0 !important; }
-.styled-table tbody td { padding: 5px 8px; border-bottom: 1px solid #E0E0E0; color: #141414; }
-.styled-table .sst-warm { color: #c62828; font-weight: 600; }
-.styled-table .sst-cool { color: #1565c0; }
-.styled-table .payout-pos { color: #43A047; font-weight: 700; }
-.styled-table .payout-zero { color: #9E9E9E; }
-
-.note-text { font-size: 10px; color: #9E9E9E; margin-top: 8px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -164,10 +72,10 @@ companies = [ALL_LABEL] + sorted(baselines_df["company"].tolist())
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown('<div class="section-title">Empresa asegurada</div>', unsafe_allow_html=True)
+    st.markdown("#### Empresa asegurada")
     company = st.selectbox("Empresa", companies, label_visibility="collapsed")
 
-    st.markdown('<div class="section-title">Temporada</div>', unsafe_allow_html=True)
+    st.markdown("#### Temporada")
     season = st.selectbox(
         "Temporada", ["both", "T1", "T2"], label_visibility="collapsed",
         format_func=lambda x: {
@@ -177,53 +85,47 @@ with st.sidebar:
         }[x],
     )
 
-    st.markdown('<div class="section-title">Parametros del trigger</div>', unsafe_allow_html=True)
+    st.markdown("#### Parámetros del trigger")
     entry = st.slider(
-        "Anomalia SST entrada T_ent (°C)", 0.0, 2.0, 0.5, 0.1,
-        help="Umbral a partir del cual el seguro empieza a pagar. Si la anomalia SST no supera este valor, el pago es cero. Subirlo hace el contrato mas barato pero menos frecuente.",
+        "Anomalía SST entrada T_ent (°C)", 0.0, 2.0, 0.5, 0.1,
+        help="Umbral a partir del cual el seguro empieza a pagar. Si la anomalía SST no supera este valor, el pago es cero.",
     )
     exit_ = st.slider(
-        "Anomalia SST salida T_sal (°C)", 0.5, 5.0, 2.5, 0.1,
-        help="Nivel de anomalia SST al que se alcanza el pago maximo. Entre T_ent y T_sal el pago crece linealmente. Cuanto mas cerca de T_ent, mas rapido satura.",
+        "Anomalía SST salida T_sal (°C)", 0.5, 5.0, 2.5, 0.1,
+        help="Nivel de anomalía SST al que se alcanza el pago máximo. Entre T_ent y T_sal el pago crece linealmente.",
     )
     if exit_ <= entry:
         exit_ = round(entry + 0.1, 1)
         st.warning(f"T_sal ajustado a {exit_:.1f} °C")
 
-    st.markdown('<div class="section-title">Cobertura y precio</div>', unsafe_allow_html=True)
+    st.markdown("#### Cobertura y precio")
     cov = st.slider(
         "Cobertura contratada (%)", 10, 100, 80, 5,
-        help="Fraccion del baseline cubierta. El pago maximo es cobertura x baseline x precio. Bajarla reduce prima y pago maximo proporcionalmente.",
+        help="Fracción del baseline cubierta. El pago máximo es cobertura × baseline × precio.",
     ) / 100
     price = st.number_input(
         "Precio referencia (USD/ton)", 50, 1000, 300, 10,
-        help="Precio de la anchoveta para convertir toneladas a USD. No cambia frecuencias ni fracciones de pago.",
+        help="Precio de la anchoveta para convertir toneladas a USD.",
     )
 
-    st.markdown('<div class="section-title">Gastos y margen</div>', unsafe_allow_html=True)
+    st.markdown("#### Gastos y margen")
     factor = st.number_input(
         "Factor de carga", 1.0, 3.0, 1.65, 0.05,
-        help="Prima comercial = Prima pura x factor. Un factor de 1.65 implica un loss ratio del 60.6%.",
+        help="Prima comercial = Prima pura × factor. Un factor de 1.65 implica un loss ratio del 60.6%.",
     )
 
-    with st.expander("Como funciona el cotizador"):
+    with st.expander("¿Cómo funciona el cotizador?"):
         st.markdown("""
-**Indice:** anomalia SST promedio de la temporada en Centro Norte (MODIS AQUA, 7.1°S-11°S).
-Positivo = mar mas calido que lo normal.
+**Índice:** anomalía SST promedio de la temporada en Centro Norte (MODIS AQUA, 7.1°S-11°S).
+Positivo = mar más cálido que lo normal.
 
-**Pago:** si SST < T_ent no hay pago. Si SST >= T_sal se paga el maximo.
+**Pago:** si SST < T_ent no hay pago. Si SST >= T_sal se paga el máximo.
 Entre ambos crece linealmente:
 > pago = baseline × cobertura × (SST − T_ent) / (T_sal − T_ent)
 
-**Prima pura (AAL):** promedio historico del pago anual sobre 2002-2025.
+**Prima pura (AAL):** promedio histórico del pago anual sobre 2002-2025.
 
 **Prima comercial:** Prima pura × factor de carga.
-
-**Que mueve el precio:**
-- Subir T_ent → menos activaciones → prima baja
-- Bajar T_sal → satura mas rapido → prima sube
-- Bajar cobertura → prima baja proporcionalmente
-- Subir precio USD/ton → misma frecuencia, mayor monto en USD
         """)
 
 # ── Compute ───────────────────────────────────────────────────────────────────
@@ -277,59 +179,32 @@ load_pct      = 1 - 1 / factor
 period_label  = baseline_period(company, season, actuals_df, ALL_LABEL)
 
 # ── Header ───────────────────────────────────────────────────────────────────
-st.markdown("""
-<div style="border-bottom:3px solid #43A047; padding-bottom:10px; margin-bottom:16px;">
-  <span style="font-size:18px; font-weight:700; color:#141414;">Cotizador Parametrico</span>
-  <span style="font-size:14px; color:#555555; margin-left:10px;">Seguro de Captura de Anchoveta</span>
-  <span style="float:right; font-size:12px; font-weight:700; color:#43A047; letter-spacing:1px;">SUYANA</span>
-  <div style="font-size:11px; color:#9E9E9E; margin-top:4px;">Centro Norte (11°S - 7.1°S) · MODIS SST 2002-2025 · Datos IHMA 2015-2025</div>
-</div>
-""", unsafe_allow_html=True)
+st.title("Cotizador Paramétrico — Seguro de Captura de Anchoveta")
+st.caption("Centro Norte (11°S - 7.1°S)  ·  MODIS SST 2002-2025  ·  Datos IHMA 2015-2025")
+st.divider()
 
-# ── Baseline box ─────────────────────────────────────────────────────────────
-st.markdown(f"""
-<div class="baseline-box">
-  <div class="bl-label">Captura de referencia (baseline)</div>
-  <div class="bl-val">{baseline:,.0f} ton</div>
-  <div class="bl-period">{period_label}</div>
-</div>
-""", unsafe_allow_html=True)
+# ── Baseline ─────────────────────────────────────────────────────────────────
+st.metric("Captura de referencia (baseline)", f"{baseline:,.0f} ton", help=period_label)
+st.caption(period_label)
 
-# ── KPI strip ─────────────────────────────────────────────────────────────────
-st.markdown(f"""
-<div class="kpi-strip">
-  <div class="kpi">
-    <div class="kpi-label">Pago maximo</div>
-    <div class="kpi-val">{fmt_k(max_pay_ton)} ton</div>
-    <div class="kpi-sub">USD {fmt_k(max_pay_usd)}</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">Prima pura (AAL)</div>
-    <div class="kpi-val green">USD {fmt_k(pure_prem_usd)}/año</div>
-    <div class="kpi-sub">{fmt_pct(aal_pct)} del baseline · {fmt_k(aal_ton)} ton</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">Prima comercial</div>
-    <div class="kpi-val">USD {fmt_k(comm_prem_usd)}/año</div>
-    <div class="kpi-sub">tasa {fmt_pct(comm_prem_usd / (max_pay_usd or 1))} s/ suma asegurada</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-label">Carga (gastos + margen)</div>
-    <div class="kpi-val">USD {fmt_k(load_usd)}/año</div>
-    <div class="kpi-sub">{fmt_pct(load_pct)} de la prima comercial</div>
-  </div>
-</div>
-""", unsafe_allow_html=True)
+# ── KPIs ─────────────────────────────────────────────────────────────────────
+c1, c2, c3, c4 = st.columns(4)
+c1.metric("Pago máximo", f"{fmt_k(max_pay_ton)} ton", f"USD {fmt_k(max_pay_usd)}")
+c2.metric("Prima pura (AAL)", f"USD {fmt_k(pure_prem_usd)}/año", f"{fmt_pct(aal_pct)} del baseline")
+c3.metric("Prima comercial", f"USD {fmt_k(comm_prem_usd)}/año", f"tasa {fmt_pct(comm_prem_usd / (max_pay_usd or 1))} s/ SA")
+c4.metric("Carga", f"USD {fmt_k(load_usd)}/año", f"{fmt_pct(load_pct)} de la prima")
+
+st.divider()
 
 # ── Chart + Table ─────────────────────────────────────────────────────────────
 col_chart, col_table = st.columns([1, 1], gap="large")
 
 with col_chart:
-    st.markdown('<div class="panel-title">Curva de pago vs anomalia SST</div>', unsafe_allow_html=True)
+    st.subheader("Curva de pago vs anomalía SST")
 
-    sst_range  = np.arange(-1.5, 5.25, 0.05)
-    ramp_y     = [baseline * cov * payout_frac(s, entry, exit_) for s in sst_range]
-    ols_y      = [baseline * cov * ols_loss_frac(s, BETA) for s in sst_range]
+    sst_range = np.arange(-1.5, 5.25, 0.05)
+    ramp_y    = [baseline * cov * payout_frac(s, entry, exit_) for s in sst_range]
+    ols_y     = [baseline * cov * ols_loss_frac(s, BETA) for s in sst_range]
 
     fig = go.Figure()
 
@@ -367,16 +242,16 @@ with col_chart:
             cold_x.append(r["sst"]); cold_y.append(r["paton"])
 
     fig.add_trace(go.Scatter(
-        x=cold_x, y=cold_y, mode="markers", name="Temporada fria",
+        x=cold_x, y=cold_y, mode="markers", name="Temporada fría",
         marker=dict(color="#90A4AE", size=8, line=dict(color="white", width=1.5)),
     ))
     fig.add_trace(go.Scatter(
-        x=warm_x, y=warm_y, mode="markers+text", name="Temporada calida",
+        x=warm_x, y=warm_y, mode="markers+text", name="Temporada cálida",
         text=warm_txt, textposition="top right", textfont=dict(size=9, color="#141414"),
         marker=dict(color="#FF8F00", size=8, line=dict(color="white", width=1.5)),
     ))
     fig.add_trace(go.Scatter(
-        x=nino_x, y=nino_y, mode="markers+text", name="El Nino (2015, 2023)",
+        x=nino_x, y=nino_y, mode="markers+text", name="El Niño (2015, 2023)",
         text=nino_txt, textposition="top right", textfont=dict(size=9, color="#141414"),
         marker=dict(color="#c62828", size=10, line=dict(color="white", width=1.5)),
     ))
@@ -392,7 +267,7 @@ with col_chart:
     fig.update_layout(
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#FFFFFF",
-        xaxis=dict(title="Anomalia SST (°C)", range=[-1.5, 5.2],
+        xaxis=dict(title="Anomalía SST (°C)", range=[-1.5, 5.2],
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
         yaxis=dict(title="Pago (ton)", range=[0, max_pay_ton * 1.15],
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
@@ -406,51 +281,32 @@ with col_chart:
     st.plotly_chart(fig, use_container_width=True)
 
 with col_table:
-    st.markdown('<div class="panel-title">Temporadas historicas (SST 2002-2025)</div>', unsafe_allow_html=True)
+    st.subheader("Temporadas históricas (SST 2002-2025)")
 
     sorted_rows = sorted(rows, key=lambda r: (-r["year"], r["tipo"]))
 
-    rows_html = ""
-    for r in sorted_rows:
-        loss_cls = "loss-row" if r["f"] > 0 else ""
-        sst_cls  = "sst-warm" if r["sst"] >= entry else "sst-cool"
-        f_str    = f"{r['f']*100:.1f}%" if r["f"] > 0 else '<span class="payout-zero">0%</span>'
-        ton_str  = f'<span class="payout-pos">{r["paton"]:,.0f}</span>' if r["f"] > 0 else '<span class="payout-zero">-</span>'
-        usd_str  = f'<span class="payout-pos">USD {fmt_k(r["pausd"])}</span>' if r["f"] > 0 else '<span class="payout-zero">-</span>'
-        act_str  = f'{r["actual"]:,.0f} ton' if r["actual"] is not None else "-"
-        rows_html += f"""
-        <tr class="{loss_cls}">
-          <td>{r['year']}</td><td>{r['tipo']}</td>
-          <td class="{sst_cls}">{r['sst']:.2f}</td>
-          <td>{f_str}</td><td>{ton_str}</td><td>{usd_str}</td><td>{act_str}</td>
-        </tr>"""
-
-    st.markdown(f"""
-    <table class="styled-table">
-      <thead>
-        <tr>
-          <th>Año</th><th>Temp.</th><th>SST (°C)</th>
-          <th>f pago</th><th>Pago (ton)</th><th>Pago (USD)</th><th>Captura real</th>
-        </tr>
-      </thead>
-      <tbody>{rows_html}</tbody>
-    </table>
-    <div class="note-text">Captura real disponible 2015-2025. SST: MODIS AQUA Centro Norte.</div>
-    """, unsafe_allow_html=True)
-
     download_df = pd.DataFrame([{
-        "año":         r["year"],
-        "temporada":   r["tipo"],
-        "sst_anomalia": round(r["sst"], 3),
-        "f_pago":      round(r["f"], 4),
-        "pago_ton":    round(r["paton"], 1),
-        "pago_usd":    round(r["pausd"], 0),
+        "año":              r["year"],
+        "temporada":        r["tipo"],
+        "sst_anomalia":     round(r["sst"], 3),
+        "f_pago":           round(r["f"], 4),
+        "pago_ton":         round(r["paton"], 1),
+        "pago_usd":         round(r["pausd"], 0),
         "captura_real_ton": r["actual"] if r["actual"] is not None else "",
     } for r in sorted_rows])
 
     st.download_button(
-        label="Descargar datos (CSV)",
+        "⬇ Descargar CSV",
         data=download_df.to_csv(index=False).encode("utf-8"),
         file_name=f"cotizacion_{company.replace(' ', '_')}_{season}.csv",
         mime="text/csv",
     )
+
+    display_df = download_df.rename(columns={
+        "año": "Año", "temporada": "Temp.", "sst_anomalia": "SST (°C)",
+        "f_pago": "f pago", "pago_ton": "Pago (ton)",
+        "pago_usd": "Pago (USD)", "captura_real_ton": "Captura real",
+    })
+    st.dataframe(display_df, use_container_width=True, hide_index=True, height=420)
+
+    st.caption("Captura real disponible 2015-2025. SST: MODIS AQUA Centro Norte.")
