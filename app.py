@@ -6,15 +6,15 @@ from pathlib import Path
 
 st.set_page_config(page_title="Cotizador Pesca Industrial", layout="wide")
 
-DATA_DIR = Path(__file__).parent / "data"
 BETA = -0.816  # OLS reference curve
 
 
 @st.cache_data
 def load_data():
-    sst = pd.read_csv(DATA_DIR / "cotizador_sst_by_season.csv")
-    baselines = pd.read_csv(DATA_DIR / "cotizador_company_baselines.csv")
-    actuals = pd.read_csv(DATA_DIR / "cotizador_company_actuals.csv")
+    import io
+    sst = pd.read_csv(io.StringIO(st.secrets["sst_by_season"]))
+    baselines = pd.read_csv(io.StringIO(st.secrets["company_baselines"]))
+    actuals = pd.read_csv(io.StringIO(st.secrets["company_actuals"]))
     return sst, baselines, actuals
 
 
