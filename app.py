@@ -6,15 +6,15 @@ from pathlib import Path
 
 st.set_page_config(page_title="Cotizador Pesca Industrial", layout="wide")
 
+DATA_DIR = Path(__file__).parent / "data"
 BETA = -0.816  # OLS reference curve
 
 
 @st.cache_data
 def load_data():
-    import io
-    sst = pd.read_csv(io.StringIO(st.secrets["sst_by_season"]))
-    baselines = pd.read_csv(io.StringIO(st.secrets["company_baselines"]))
-    actuals = pd.read_csv(io.StringIO(st.secrets["company_actuals"]))
+    sst = pd.read_csv(DATA_DIR / "cotizador_sst_by_season.csv")
+    baselines = pd.read_csv(DATA_DIR / "cotizador_company_baselines.csv")
+    actuals = pd.read_csv(DATA_DIR / "cotizador_company_actuals.csv")
     return sst, baselines, actuals
 
 
@@ -47,7 +47,8 @@ def fmt_pct(n):
 # ── Load ─────────────────────────────────────────────────────────────────────
 sst_df, baselines_df, actuals_df = load_data()
 
-companies = sorted(baselines_df["company"].tolist())
+ALL_LABEL = "Todas las empresas"
+companies = [ALL_LABEL] + sorted(baselines_df["company"].tolist())
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
@@ -79,9 +80,15 @@ with st.sidebar:
     st.caption("Prima comercial = prima pura / loss ratio")
 
 # ── Compute ───────────────────────────────────────────────────────────────────
-bl_row = baselines_df[baselines_df["company"] == company].iloc[0]
-bl_t1 = bl_row["baseline_t1"]
-bl_t2 = bl_row["baseline_t2"]
+if company == ALL_LABEL:
+    bl_t1 = baselines_df["baseline_t1"].sum()
+    bl_t2 = baselines_df["baseline_t2"].sum()
+    co_actuals = actuals_df.groupby(["year", "tipo"])["actual_ton"].sum().to_dict()
+else:
+    bl_row = baselines_df[baselines_df["company"] == company].iloc[0]
+    bl_t1 = bl_row["baseline_t1"]
+    bl_t2 = bl_row["baseline_t2"]
+    co_actuals = actuals_df[actuals_df["company"] == company].set_index(["year", "tipo"])["actual_ton"].to_dict()
 
 if season == "T1":
     baseline = bl_t1
@@ -94,8 +101,6 @@ max_pay_ton = baseline * cov
 max_pay_usd = max_pay_ton * price
 
 # Build season rows
-co_actuals = actuals_df[actuals_df["company"] == company].set_index(["year", "tipo"])["actual_ton"].to_dict()
-
 if season == "both":
     rows = []
     for _, r in sst_df.iterrows():
