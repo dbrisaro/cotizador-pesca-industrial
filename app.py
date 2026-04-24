@@ -15,11 +15,11 @@ st.markdown("""
 body {
     font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif !important;
 }
-h3 { font-size: 1.1rem !important; }
-[data-testid="stCaptionContainer"] p { font-size: 0.75rem !important; }
-[data-testid="stMetricLabel"] { font-size: 0.75rem !important; }
-[data-testid="stMetricValue"] { font-size: 1.2rem !important; }
-[data-testid="stMetricDelta"] { font-size: 0.72rem !important; }
+h3 { font-size: 1.3rem !important; }
+[data-testid="stCaptionContainer"] p { font-size: 0.85rem !important; }
+[data-testid="stMetricLabel"] { font-size: 0.85rem !important; }
+[data-testid="stMetricValue"] { font-size: 1.5rem !important; }
+[data-testid="stMetricDelta"] { font-size: 0.80rem !important; }
 </style>
 """, unsafe_allow_html=True)
 
