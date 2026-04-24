@@ -310,28 +310,16 @@ with col_chart:
 
     bar_colors = ["#43A047" if r["f"] > 0 else "#E0E0E0" for r in ts_rows]
 
-    fig2.add_trace(go.Scatter(
-        x=[None], y=[None], mode="markers",
-        marker=dict(symbol="square", size=10, color="#43A047"),
-        name="Pago paramétrico",
-    ))
-    fig2.add_trace(go.Scatter(
-        x=[None], y=[None], mode="markers",
-        marker=dict(symbol="square", size=10, color="#E0E0E0"),
-        name="Sin activacion",
-    ))
     fig2.add_trace(go.Bar(
         x=x_labels,
         y=[r["paton"] for r in ts_rows],
+        name="Pago paramétrico",
         marker_color=bar_colors, marker_line_width=0,
-        showlegend=False,
     ))
-
     fig2.add_trace(go.Bar(
         x=loss_x, y=loss_y,
-        name="Pérdida real (baseline - captura)",
-        marker_color="#c62828",
-        marker_line_width=0,
+        name="Pérdida real",
+        marker_color="#c62828", marker_line_width=0,
     ))
 
     fig2.update_layout(
@@ -347,6 +335,7 @@ with col_chart:
         barmode="group",
     )
     st.plotly_chart(fig2, use_container_width=True)
+    st.caption("Verde = pago parametrico activado  ·  Gris = sin activacion  ·  Rojo = perdida real (baseline - captura)")
 
 with col_table:
     st.subheader("Temporadas históricas (SST 2002-2025)")
