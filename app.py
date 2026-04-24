@@ -59,7 +59,9 @@ def baseline_period(company, season, actuals_df, all_label):
         return ""
     years = sorted(sub["year"].unique())
     n = len(years)
-    return f"media {years[0]}-{years[-1]}, {n} temporadas"
+    unit = "anos" if season == "both" else "temporadas"
+    freq = "por ano" if season == "both" else "por temporada"
+    return f"media {years[0]}-{years[-1]}, {n} {unit} - {freq}"
 
 
 # ── Load ─────────────────────────────────────────────────────────────────────
