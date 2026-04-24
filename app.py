@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from pathlib import Path
 
-st.set_page_config(page_title="Cotizador Paramétrico — Anchoveta Perú", layout="wide")
+st.set_page_config(page_title="Cotizador Paramétrico - Anchoveta Perú", layout="wide")
 
 DATA_DIR = Path(__file__).parent / "data"
 BETA = -0.816
@@ -179,7 +179,7 @@ load_pct      = 1 - 1 / factor
 period_label  = baseline_period(company, season, actuals_df, ALL_LABEL)
 
 # ── Header ───────────────────────────────────────────────────────────────────
-st.title("Cotizador Paramétrico — Seguro de Captura de Anchoveta")
+st.title("Cotizador Paramétrico - Seguro de Captura de Anchoveta")
 st.caption("Centro Norte (11°S - 7.1°S)  ·  MODIS SST 2002-2025  ·  Datos IHMA 2015-2025")
 st.divider()
 
@@ -307,6 +307,29 @@ with col_table:
         "f_pago": "f pago", "pago_ton": "Pago (ton)",
         "pago_usd": "Pago (USD)", "captura_real_ton": "Captura real",
     })
-    st.dataframe(display_df, use_container_width=True, hide_index=True, height=420)
+
+    def color_sst(val):
+        try:
+            v = float(val)
+            if v >= entry:
+                return "color: #c62828; font-weight: bold"
+            return "color: #1565c0"
+        except (ValueError, TypeError):
+            return ""
+
+    def color_pago(val):
+        try:
+            if float(val) > 0:
+                return "color: #43A047; font-weight: bold"
+        except (ValueError, TypeError):
+            pass
+        return "color: #9E9E9E"
+
+    styled = (
+        display_df.style
+        .map(color_sst, subset=["SST (°C)"])
+        .map(color_pago, subset=["Pago (ton)", "Pago (USD)"])
+    )
+    st.dataframe(styled, use_container_width=True, hide_index=True, height=420)
 
     st.caption("Captura real disponible 2015-2025. SST: MODIS AQUA Centro Norte.")
