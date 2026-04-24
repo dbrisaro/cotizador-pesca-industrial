@@ -306,20 +306,26 @@ with col_chart:
             loss_x.append(lbl)
             loss_y.append(max(loss, 0))
 
-    fig2 = go.Figure()
+    st.markdown("""
+    <div style="display:flex;gap:16px;font-size:12px;margin-bottom:4px;">
+      <span><span style="display:inline-block;width:12px;height:12px;background:#43A047;margin-right:4px;border-radius:2px;vertical-align:middle;"></span>Pago paramétrico</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:#E0E0E0;margin-right:4px;border-radius:2px;vertical-align:middle;"></span>Sin activación</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:#c62828;margin-right:4px;border-radius:2px;vertical-align:middle;"></span>Pérdida real</span>
+    </div>
+    """, unsafe_allow_html=True)
 
-    bar_colors = ["#43A047" if r["f"] > 0 else "#E0E0E0" for r in ts_rows]
+    fig2 = go.Figure()
 
     fig2.add_trace(go.Bar(
         x=x_labels,
         y=[r["paton"] for r in ts_rows],
-        name="Pago paramétrico",
         marker_color=bar_colors, marker_line_width=0,
+        showlegend=False,
     ))
     fig2.add_trace(go.Bar(
         x=loss_x, y=loss_y,
-        name="Pérdida real",
         marker_color="#c62828", marker_line_width=0,
+        showlegend=False,
     ))
 
     fig2.update_layout(
@@ -327,15 +333,13 @@ with col_chart:
         plot_bgcolor="#FFFFFF",
         xaxis=dict(gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=9), tickangle=-45),
         yaxis=dict(title="Toneladas", gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
-        legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
-                    bgcolor="rgba(255,255,255,0.9)"),
-        margin=dict(l=10, r=10, t=30, b=60),
+        showlegend=False,
+        margin=dict(l=10, r=10, t=10, b=60),
         height=320,
         font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
         barmode="group",
     )
     st.plotly_chart(fig2, use_container_width=True)
-    st.caption("Verde = pago parametrico activado  ·  Gris = sin activacion  ·  Rojo = perdida real (baseline - captura)")
 
 with col_table:
     st.subheader("Temporadas históricas (SST 2002-2025)")
