@@ -180,7 +180,7 @@ load_pct      = 1 - 1 / factor
 period_label  = baseline_period(company, season, actuals_df, ALL_LABEL)
 
 # ── Header ───────────────────────────────────────────────────────────────────
-st.title("Cotizador Paramétrico - Seguro de Captura de Anchoveta")
+st.subheader("Cotizador Paramétrico - Seguro de Captura de Anchoveta")
 st.caption("Centro Norte (11°S - 7.1°S)  ·  MODIS SST 2002-2025  ·  Datos IHMA 2015-2025")
 st.divider()
 
