@@ -291,6 +291,53 @@ with col_chart:
     )
     st.plotly_chart(fig, use_container_width=True)
 
+    # ── Time series chart ─────────────────────────────────────────────────────
+    st.subheader("Pago paramétrico y pérdida real por temporada")
+
+    ts_rows = sorted(rows, key=lambda r: (r["year"], r["tipo"]))
+    x_labels = [f"{r['year']} {r['tipo']}" if season == "both" else str(r["year"]) for r in ts_rows]
+
+    bar_colors = ["#43A047" if r["f"] > 0 else "#E0E0E0" for r in ts_rows]
+
+    loss_x, loss_y = [], []
+    for r, lbl in zip(ts_rows, x_labels):
+        if r["actual"] is not None:
+            loss = r["baseline_s"] - r["actual"]
+            loss_x.append(lbl)
+            loss_y.append(max(loss, 0))
+
+    fig2 = go.Figure()
+
+    fig2.add_trace(go.Bar(
+        x=x_labels,
+        y=[r["paton"] for r in ts_rows],
+        name="Pago paramétrico",
+        marker_color=bar_colors,
+        marker_line_width=0,
+    ))
+
+    fig2.add_trace(go.Scatter(
+        x=loss_x, y=loss_y,
+        name="Pérdida real (baseline - captura)",
+        mode="lines+markers",
+        line=dict(color="#c62828", width=2),
+        marker=dict(size=6, color="#c62828"),
+    ))
+
+    fig2.update_layout(
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#FFFFFF",
+        xaxis=dict(gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=9), tickangle=-45),
+        yaxis=dict(title="Toneladas", gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
+        legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
+                    bgcolor="rgba(255,255,255,0.9)"),
+        margin=dict(l=10, r=10, t=30, b=60),
+        height=320,
+        font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
+        barmode="overlay",
+    )
+    st.plotly_chart(fig2, use_container_width=True)
+
 with col_table:
     st.subheader("Temporadas históricas (SST 2002-2025)")
 
