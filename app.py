@@ -127,8 +127,12 @@ with st.sidebar:
 
     with st.expander("¿Cómo funciona el cotizador?"):
         st.markdown("""
-**Índice:** anomalía SST promedio de la temporada en Centro Norte (MODIS AQUA, 7.1°S-11°S).
+**Zona:** Centro Norte (11°S - 7.1°S).
+
+**Índice:** anomalía SST promedio de la temporada (MODIS AQUA 2002-2025).
 Positivo = mar más cálido que lo normal.
+
+**Captura real:** datos IHMA 2015-2025.
 
 **Pago:** si SST < T_ent no hay pago. Si SST >= T_sal se paga el máximo.
 Entre ambos crece linealmente:
@@ -191,7 +195,6 @@ period_label  = baseline_period(company, season, actuals_df, ALL_LABEL)
 
 # ── Header ───────────────────────────────────────────────────────────────────
 st.subheader("Cotizador Paramétrico - Seguro de Captura de Anchoveta")
-st.caption("Centro Norte (11°S - 7.1°S)  ·  MODIS SST 2002-2025  ·  Datos IHMA 2015-2025")
 st.divider()
 
 # ── Baseline ─────────────────────────────────────────────────────────────────
