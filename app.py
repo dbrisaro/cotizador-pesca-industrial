@@ -308,20 +308,23 @@ with col_chart:
 
     fig2 = go.Figure()
 
-    act_x  = [lbl for r, lbl in zip(ts_rows, x_labels) if r["f"] > 0]
-    act_y  = [r["paton"] for r in ts_rows if r["f"] > 0]
-    inact_x = [lbl for r, lbl in zip(ts_rows, x_labels) if r["f"] == 0]
-    inact_y = [r["paton"] for r in ts_rows if r["f"] == 0]
+    bar_colors = ["#43A047" if r["f"] > 0 else "#E0E0E0" for r in ts_rows]
 
-    fig2.add_trace(go.Bar(
-        x=inact_x, y=inact_y,
+    fig2.add_trace(go.Scatter(
+        x=[None], y=[None], mode="markers",
+        marker=dict(symbol="square", size=10, color="#43A047"),
+        name="Pago paramétrico",
+    ))
+    fig2.add_trace(go.Scatter(
+        x=[None], y=[None], mode="markers",
+        marker=dict(symbol="square", size=10, color="#E0E0E0"),
         name="Sin activacion",
-        marker_color="#E0E0E0", marker_line_width=0,
     ))
     fig2.add_trace(go.Bar(
-        x=act_x, y=act_y,
-        name="Pago paramétrico",
-        marker_color="#43A047", marker_line_width=0,
+        x=x_labels,
+        y=[r["paton"] for r in ts_rows],
+        marker_color=bar_colors, marker_line_width=0,
+        showlegend=False,
     ))
 
     fig2.add_trace(go.Bar(
