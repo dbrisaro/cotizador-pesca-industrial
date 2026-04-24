@@ -289,8 +289,8 @@ with col_table:
     download_df = pd.DataFrame([{
         "año":              r["year"],
         "temporada":        r["tipo"],
-        "sst_anomalia":     round(r["sst"], 3),
-        "f_pago":           round(r["f"], 3),
+        "sst_anomalia":     round(r["sst"], 2),
+        "f_pago":           round(r["f"], 2),
         "pago_ton":         round(r["paton"], 1),
         "pago_usd":         round(r["pausd"], 0),
         "captura_real_ton": r["actual"] if r["actual"] is not None else "",
