@@ -366,10 +366,9 @@ with col_ramp:
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
         yaxis=dict(title="Pago (ton)", range=[0, shared_ymax],
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
-        legend=dict(orientation="v", x=0.01, y=0.99,
-                    bgcolor="rgba(255,255,255,0.9)", bordercolor="#E0E0E0", borderwidth=1,
-                    font=dict(size=10)),
-        margin=dict(l=10, r=10, t=10, b=10),
+        legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
+                    bgcolor="rgba(255,255,255,0)"),
+        margin=dict(l=10, r=10, t=30, b=10),
         height=420,
         font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
     )
