@@ -44,6 +44,24 @@ def fmt_pct(n):
     return f"{n*100:.1f}%"
 
 
+def baseline_period(company, season, actuals_df, all_label):
+    if company == all_label:
+        df = actuals_df
+    else:
+        df = actuals_df[actuals_df["company"] == company]
+
+    if season == "both":
+        sub = df
+    else:
+        sub = df[df["tipo"] == season]
+
+    if sub.empty:
+        return ""
+    years = sorted(sub["year"].unique())
+    n = len(years)
+    return f"media {years[0]}-{years[-1]}, {n} temporadas"
+
+
 # ── Load ─────────────────────────────────────────────────────────────────────
 sst_df, baselines_df, actuals_df = load_data()
 
@@ -58,26 +76,89 @@ with st.sidebar:
     season = st.selectbox(
         "Temporada",
         ["both", "T1", "T2"],
-        format_func=lambda x: {"both": "Ambas (T1 + T2)", "T1": "T1 - Primera (abr-jul)", "T2": "T2 - Segunda (nov-dic)"}[x],
+        format_func=lambda x: {
+            "both": "Ambas (T1 + T2)",
+            "T1": "T1 - Primera (abr-jul)",
+            "T2": "T2 - Segunda (nov-dic)",
+        }[x],
     )
 
     st.divider()
     st.subheader("Trigger")
-    entry = st.slider("Anomalia SST entrada T_ent (°C)", 0.0, 2.0, 0.5, 0.1)
-    exit_ = st.slider("Anomalia SST salida T_sal (°C)", 0.5, 5.0, 2.5, 0.1)
+    entry = st.slider(
+        "Anomalia SST entrada T_ent (°C)", 0.0, 2.0, 0.5, 0.1,
+        help=(
+            "Umbral a partir del cual el seguro empieza a pagar. "
+            "Si la anomalia SST de la temporada no supera este valor, el pago es cero. "
+            "Subirlo hace el contrato mas barato pero menos frecuente."
+        ),
+    )
+    exit_ = st.slider(
+        "Anomalia SST salida T_sal (°C)", 0.5, 5.0, 2.5, 0.1,
+        help=(
+            "Nivel de anomalia SST al que se alcanza el pago maximo (100%). "
+            "Entre T_ent y T_sal el pago crece linealmente. "
+            "Cuanto mas cerca este de T_ent, mas rapido satura el pago; "
+            "cuanto mas lejos, mas gradual."
+        ),
+    )
     if exit_ <= entry:
         exit_ = round(entry + 0.1, 1)
         st.warning(f"T_sal ajustado a {exit_:.1f} °C")
 
     st.divider()
     st.subheader("Cobertura y precio")
-    cov = st.slider("Cobertura contratada (%)", 10, 100, 80, 5) / 100
-    price = st.number_input("Precio referencia (USD/ton)", 50, 1000, 300, 10)
+    cov = st.slider(
+        "Cobertura contratada (%)", 10, 100, 80, 5,
+        help=(
+            "Fraccion del baseline de captura cubierta por el contrato. "
+            "El pago maximo es cobertura x baseline x precio. "
+            "Bajarla reduce prima y pago maximo proporcionalmente."
+        ),
+    ) / 100
+    price = st.number_input(
+        "Precio referencia (USD/ton)", 50, 1000, 300, 10,
+        help=(
+            "Precio de la anchoveta usado para convertir toneladas a USD. "
+            "Solo afecta los montos en dolares; no cambia frecuencias ni fracciones de pago."
+        ),
+    )
 
     st.divider()
     st.subheader("Gastos y margen")
-    lr = st.slider("Loss ratio objetivo (%)", 30, 90, 65, 5) / 100
-    st.caption("Prima comercial = prima pura / loss ratio")
+    factor = st.number_input(
+        "Factor de carga", 1.0, 3.0, 1.65, 0.05,
+        help=(
+            "Prima comercial = Prima pura x factor. "
+            "Un factor de 1.65 implica un loss ratio del 60.6% "
+            "(es decir, el 60.6% de la prima cubre siniestros y el resto gastos y margen)."
+        ),
+    )
+
+    st.divider()
+    with st.expander("Como funciona el cotizador"):
+        st.markdown(
+            """
+**Indice:** la anomalia SST promedio de la temporada en la zona Centro Norte del Peru
+(MODIS AQUA, 7.1°S-11°S). Positivo = mar mas calido que lo normal.
+
+**Pago:** si SST < T_ent, no hay pago. Si SST >= T_sal, se paga el maximo.
+Entre ambos el pago crece linealmente:
+
+> pago = baseline x cobertura x (SST - T_ent) / (T_sal - T_ent)
+
+**Prima pura (AAL):** promedio historico del pago anual sobre 2002-2025.
+
+**Prima comercial:** Prima pura x factor de carga.
+El factor cubre gastos operativos, comision y margen de la aseguradora.
+
+**Que mueve el precio:**
+- Subir T_ent → el contrato se activa menos seguido → prima baja
+- Bajar T_sal → el pago satura mas rapido → prima sube
+- Bajar cobertura → pago maximo menor → prima baja proporcionalmente
+- Subir precio USD/ton → misma frecuencia, mayor monto en USD
+            """
+        )
 
 # ── Compute ───────────────────────────────────────────────────────────────────
 if company == ALL_LABEL:
@@ -88,7 +169,11 @@ else:
     bl_row = baselines_df[baselines_df["company"] == company].iloc[0]
     bl_t1 = bl_row["baseline_t1"]
     bl_t2 = bl_row["baseline_t2"]
-    co_actuals = actuals_df[actuals_df["company"] == company].set_index(["year", "tipo"])["actual_ton"].to_dict()
+    co_actuals = (
+        actuals_df[actuals_df["company"] == company]
+        .set_index(["year", "tipo"])["actual_ton"]
+        .to_dict()
+    )
 
 if season == "T1":
     baseline = bl_t1
@@ -120,23 +205,27 @@ for r in rows:
 
 # AAL
 if season == "both":
-    years = sorted(set(r["year"] for r in rows))
-    annual = [sum(r["paton"] for r in rows if r["year"] == yr) for yr in years]
+    years_uniq = sorted(set(r["year"] for r in rows))
+    annual = [sum(r["paton"] for r in rows if r["year"] == yr) for yr in years_uniq]
     aal_ton = np.mean(annual)
 else:
     aal_ton = np.mean([r["paton"] for r in rows])
 
 aal_pct = aal_ton / (baseline or 1)
 pure_prem_usd = aal_ton * price
-comm_prem_usd = pure_prem_usd / lr
+comm_prem_usd = pure_prem_usd * factor
 load_usd = comm_prem_usd - pure_prem_usd
-load_pct = 1 - lr
+load_pct = 1 - 1 / factor
+
+# Baseline period label
+period_label = baseline_period(company, season, actuals_df, ALL_LABEL)
 
 # ── Baseline box ─────────────────────────────────────────────────────────────
 st.markdown(
     f"<div style='background:#f5f5f5;border-radius:6px;padding:10px 16px;margin-bottom:16px;"
     f"font-size:14px;color:#555'>Captura de referencia (baseline): "
-    f"<strong style='font-size:18px;color:#111'>{baseline:,.0f} ton</strong></div>",
+    f"<strong style='font-size:18px;color:#111'>{baseline:,.0f} ton</strong>"
+    f"<span style='margin-left:12px;font-size:12px;color:#999'>{period_label}</span></div>",
     unsafe_allow_html=True,
 )
 
@@ -215,7 +304,6 @@ with col_chart:
         marker=dict(color="#D32F2F", size=10, line=dict(color="white", width=1.5)),
     ))
 
-    # Entry / exit lines
     fig.add_vline(x=entry, line=dict(color="#1976D2", width=1.5, dash="dash"),
                   annotation_text=f"T_ent {entry:.1f}°C", annotation_position="bottom")
     fig.add_vline(x=exit_, line=dict(color="#D32F2F", width=1.5, dash="dash"),
@@ -234,7 +322,7 @@ with col_chart:
     st.plotly_chart(fig, use_container_width=True)
 
 with col_table:
-    st.subheader(f"Temporadas historicas (SST 2002-2025)")
+    st.subheader("Temporadas historicas (SST 2002-2025)")
 
     sorted_rows = sorted(rows, key=lambda r: (-r["year"], r["tipo"]))
     table_data = []
