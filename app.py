@@ -305,11 +305,21 @@ with col_chart:
     st.plotly_chart(fig, use_container_width=True)
 
     # ── Time series chart ─────────────────────────────────────────────────────
-    st.subheader("Pago paramétrico y pérdida real por temporada")
+    st.subheader(
+        "Pago paramétrico y pérdida real por temporada",
+        help=(
+            "Barras verdes: lo que habria pagado el seguro con los parametros actuales en cada temporada historica. "
+            "Barras grises: temporadas donde el SST no supero T_ent y el seguro no se activa. "
+            "Barras rojas: perdida real de captura (baseline - captura IHMA). "
+            "Cuando una barra verde y una roja coinciden, el seguro habria compensado la perdida real. "
+            "Cuando hay rojo sin verde (o verde sin rojo), hay basis risk: el indice y la perdida real no coinciden. "
+            "Datos de captura real disponibles desde 2016."
+        )
+    )
 
     all_years = sorted(set(r["year"] for r in rows))
     year_from = st.select_slider(
-        "Desde", options=all_years, value=2015, label_visibility="collapsed",
+        "Desde", options=all_years, value=2016, label_visibility="collapsed",
         key="year_from",
         help="Arrastra para cambiar el año de inicio del grafico"
     )
