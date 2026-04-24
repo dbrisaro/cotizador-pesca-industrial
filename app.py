@@ -316,12 +316,11 @@ with col_chart:
         marker_line_width=0,
     ))
 
-    fig2.add_trace(go.Scatter(
+    fig2.add_trace(go.Bar(
         x=loss_x, y=loss_y,
         name="Pérdida real (baseline - captura)",
-        mode="lines+markers",
-        line=dict(color="#c62828", width=2),
-        marker=dict(size=6, color="#c62828"),
+        marker_color="#c62828",
+        marker_line_width=0,
     ))
 
     fig2.update_layout(
@@ -334,7 +333,7 @@ with col_chart:
         margin=dict(l=10, r=10, t=30, b=60),
         height=320,
         font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
-        barmode="overlay",
+        barmode="group",
     )
     st.plotly_chart(fig2, use_container_width=True)
 
