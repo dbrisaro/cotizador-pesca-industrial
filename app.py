@@ -13,19 +13,25 @@ BETA = -0.816
 st.markdown("""
 <style>
 /* Page */
-.stApp { background-color: #F7F7F5; font-family: 'Helvetica Neue', Arial, sans-serif; }
+.stApp, .stApp * { background-color: transparent; font-family: 'Helvetica Neue', Arial, sans-serif !important; }
+.stApp { background-color: #F7F7F5; }
 
 /* Sidebar */
 section[data-testid="stSidebar"] > div:first-child {
     background-color: #FFFFFF;
     border-right: 1px solid #E0E0E0;
 }
-section[data-testid="stSidebar"] .stMarkdown p,
+section[data-testid="stSidebar"],
+section[data-testid="stSidebar"] * {
+    font-family: 'Helvetica Neue', Arial, sans-serif !important;
+    font-size: 13px;
+    color: #141414;
+}
 section[data-testid="stSidebar"] label,
 section[data-testid="stSidebar"] .stSelectbox label,
 section[data-testid="stSidebar"] .stSlider label,
 section[data-testid="stSidebar"] .stNumberInput label {
-    font-size: 11px !important;
+    font-size: 13px !important;
     color: #555555 !important;
 }
 
@@ -42,22 +48,7 @@ section[data-testid="stSidebar"] .stNumberInput label {
 .stSlider [data-baseweb="slider"] div[data-testid="stThumbValue"] { color: #43A047 !important; }
 
 /* Main content top padding */
-.block-container { padding-top: 0 !important; max-width: 100% !important; }
-
-/* Header */
-.app-header {
-    background: #111111;
-    color: white;
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    border-bottom: 3px solid #43A047;
-    margin: -1rem -1rem 1rem -1rem;
-}
-.app-header h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.3px; color: white; margin: 0; }
-.app-header span { font-size: 11px; color: #9E9E9E; }
-.app-header .brand { font-size: 12px; font-weight: 700; color: #43A047; margin-left: auto; letter-spacing: 1px; }
+.block-container { padding-top: 1rem !important; max-width: 100% !important; }
 
 /* Baseline box */
 .baseline-box {
@@ -272,13 +263,12 @@ load_pct      = 1 - 1 / factor
 period_label  = baseline_period(company, season, actuals_df, ALL_LABEL)
 
 # ── Header ───────────────────────────────────────────────────────────────────
-st.markdown(f"""
-<div class="app-header">
-  <div>
-    <h1>Cotizador Parametrico — Seguro de Captura de Anchoveta</h1>
-    <span>Centro Norte (11°S – 7.1°S) · MODIS SST 2002–2025 · Datos IHMA 2015–2025</span>
-  </div>
-  <div class="brand">SUYANA</div>
+st.markdown("""
+<div style="border-bottom:3px solid #43A047; padding-bottom:10px; margin-bottom:16px;">
+  <span style="font-size:18px; font-weight:700; color:#141414;">Cotizador Parametrico</span>
+  <span style="font-size:14px; color:#555555; margin-left:10px;">Seguro de Captura de Anchoveta</span>
+  <span style="float:right; font-size:12px; font-weight:700; color:#43A047; letter-spacing:1px;">SUYANA</span>
+  <div style="font-size:11px; color:#9E9E9E; margin-top:4px;">Centro Norte (11°S - 7.1°S) · MODIS SST 2002-2025 · Datos IHMA 2015-2025</div>
 </div>
 """, unsafe_allow_html=True)
 
