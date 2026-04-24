@@ -197,10 +197,13 @@ st.divider()
 st.metric("Captura de referencia (baseline)", f"{baseline:,.0f} ton", help=period_label)
 
 # ── KPIs ─────────────────────────────────────────────────────────────────────
-c1, c2, c3 = st.columns(3)
+leverage = max_pay_usd / comm_prem_usd if comm_prem_usd > 0 else 0
+
+c1, c2, c3, c4 = st.columns(4)
 c1.metric("Prima pura (AAL)", f"USD {fmt_k(pure_prem_usd)}/año", f"{fmt_pct(aal_pct)} del baseline")
 c2.metric("Prima comercial", f"USD {fmt_k(comm_prem_usd)}/año", f"tasa {fmt_pct(comm_prem_usd / (max_pay_usd or 1))} s/ SA")
 c3.metric("Suma asegurada", f"USD {fmt_k(max_pay_usd)}", f"{fmt_k(max_pay_ton)} ton", help="Pago máximo que recibes si la SST supera T_sal")
+c4.metric("Cobertura / prima", f"{leverage:.1f}x", help="Cuantas veces la prima comercial podes recibir en el peor caso")
 
 st.divider()
 
