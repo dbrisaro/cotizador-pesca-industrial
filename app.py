@@ -194,7 +194,18 @@ st.caption("Centro Norte (11°S - 7.1°S)  ·  MODIS SST 2002-2025  ·  Datos IH
 st.divider()
 
 # ── Baseline ─────────────────────────────────────────────────────────────────
-st.metric("Captura de referencia (baseline)", f"{baseline:,.0f} ton", help=period_label)
+st.metric(
+    "Captura de referencia (baseline)",
+    f"{baseline:,.0f} ton",
+    help=(
+        f"{period_label}. "
+        "El baseline es el promedio de captura declarada a la IHMA por empresa y temporada "
+        "sobre todos los anos disponibles (2015-2025). "
+        "Es el nivel de referencia contractual: si la captura real cae por debajo, "
+        "el cliente sufre una perdida. El seguro no cubre la perdida directamente - "
+        "paga segun el indice SST, independientemente de la captura real."
+    )
+)
 
 # ── KPIs ─────────────────────────────────────────────────────────────────────
 leverage = max_pay_usd / comm_prem_usd if comm_prem_usd > 0 else 0
