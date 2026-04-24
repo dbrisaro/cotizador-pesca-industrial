@@ -195,7 +195,6 @@ st.divider()
 
 # ── Baseline ─────────────────────────────────────────────────────────────────
 st.metric("Captura de referencia (baseline)", f"{baseline:,.0f} ton", help=period_label)
-st.caption(period_label)
 
 # ── KPIs ─────────────────────────────────────────────────────────────────────
 c1, c2, c3, c4 = st.columns(4)
