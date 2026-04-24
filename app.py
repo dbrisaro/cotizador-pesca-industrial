@@ -283,7 +283,7 @@ with col_bars:
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
         legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
                     bgcolor="rgba(255,255,255,0)"),
-        margin=dict(l=10, r=10, t=30, b=20),
+        margin=dict(l=70, r=10, t=30, b=20),
         height=420,
         font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
         barmode="group",
@@ -368,7 +368,7 @@ with col_ramp:
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
         legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
                     bgcolor="rgba(255,255,255,0)"),
-        margin=dict(l=10, r=10, t=30, b=10),
+        margin=dict(l=70, r=10, t=30, b=10),
         height=420,
         font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
     )
