@@ -44,12 +44,22 @@ section[data-testid="stSidebar"] p {
     display: block;
 }
 
-/* Slider: thumb */
+/* Slider: thumb and filled track */
 .stSlider [data-baseweb="slider"] [role="slider"] { background: #43A047 !important; }
-.stSlider [data-baseweb="slider"] div[data-testid="stThumbValue"] { color: #43A047 !important; }
-/* Slider: filled track (the bar that moves) */
 .stSlider [data-baseweb="slider"] > div > div:nth-child(2) { background: #43A047 !important; }
 .stSlider [data-baseweb="slider"] div[style*="background-color: rgb"] { background-color: #43A047 !important; }
+/* Slider: remove green hover highlight on tick numbers */
+.stSlider [data-testid="stThumbValue"] {
+    color: #555555 !important;
+    background: #F5F5F5 !important;
+}
+.stSlider [data-baseweb="slider"] [role="slider"]:focus { outline: none !important; box-shadow: none !important; }
+
+/* Hide sidebar collapse button and keyboard shortcut icons */
+[data-testid="stSidebarCollapseButton"] { display: none !important; }
+[data-testid="collapsedControl"] { display: none !important; }
+button[data-testid="baseButton-headerNoPadding"] { display: none !important; }
+kbd { display: none !important; }
 
 /* Main content top padding */
 .block-container { padding-top: 1rem !important; max-width: 100% !important; }
@@ -419,7 +429,7 @@ with col_table:
     <table class="styled-table">
       <thead>
         <tr>
-          <th>Ano</th><th>Temp.</th><th>SST (°C)</th>
+          <th>Año</th><th>Temp.</th><th>SST (°C)</th>
           <th>f pago</th><th>Pago (ton)</th><th>Pago (USD)</th><th>Captura real</th>
         </tr>
       </thead>
@@ -427,3 +437,20 @@ with col_table:
     </table>
     <div class="note-text">Captura real disponible 2015-2025. SST: MODIS AQUA Centro Norte.</div>
     """, unsafe_allow_html=True)
+
+    download_df = pd.DataFrame([{
+        "año":         r["year"],
+        "temporada":   r["tipo"],
+        "sst_anomalia": round(r["sst"], 3),
+        "f_pago":      round(r["f"], 4),
+        "pago_ton":    round(r["paton"], 1),
+        "pago_usd":    round(r["pausd"], 0),
+        "captura_real_ton": r["actual"] if r["actual"] is not None else "",
+    } for r in sorted_rows])
+
+    st.download_button(
+        label="Descargar datos (CSV)",
+        data=download_df.to_csv(index=False).encode("utf-8"),
+        file_name=f"cotizacion_{company.replace(' ', '_')}_{season}.csv",
+        mime="text/csv",
+    )
