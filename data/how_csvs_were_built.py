@@ -55,8 +55,12 @@ Raw source: IHMA CSV files in
 
 Gaps in the actuals:
   - 2015-T1: no data (veda or no IHMA records)
-  - 2024-T1: no data (veda or no IHMA records)
   - Pre-2015: no company-level data available
+
+Note: 2024-T1 data exists in
+  "Primera temporada de anchoveta - Calas y biometria.csv"
+  but was not processed by the original pipeline due to encoding
+  mismatch (utf-8-sig vs latin1). Added manually to the CSV.
 
 -----------------------------------------------------------------------
 OLS reference curve (shown in chart)
