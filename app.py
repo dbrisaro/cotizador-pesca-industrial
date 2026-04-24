@@ -220,10 +220,77 @@ c4.metric("Cobertura / prima", f"{leverage:.1f}x",
 
 st.divider()
 
-# ── Chart + Table ─────────────────────────────────────────────────────────────
-col_chart, col_table = st.columns([1, 1], gap="large")
+# ── Charts row ────────────────────────────────────────────────────────────────
+col_bars, col_ramp = st.columns([1, 1], gap="large")
 
-with col_chart:
+with col_bars:
+    # ── Time series chart ─────────────────────────────────────────────────────
+    st.subheader(
+        "Pago paramétrico y pérdida real por temporada",
+        help=(
+            "Barras verdes: lo que habria pagado el seguro con los parametros actuales en cada temporada historica. "
+            "Barras grises: temporadas donde el SST no supero T_ent y el seguro no se activa. "
+            "Barras rojas: perdida real de captura (baseline - captura IHMA). "
+            "Cuando una barra verde y una roja coinciden, el seguro habria compensado la perdida real. "
+            "Cuando hay rojo sin verde (o verde sin rojo), hay basis risk: el indice y la perdida real no coinciden. "
+            "Datos de captura real disponibles desde 2016."
+        )
+    )
+
+    all_years = sorted(set(r["year"] for r in rows))
+    year_from = st.select_slider(
+        "Desde", options=all_years, value=2016, label_visibility="collapsed",
+        key="year_from",
+        help="Arrastra para cambiar el año de inicio del grafico"
+    )
+
+    ts_rows = sorted([r for r in rows if r["year"] >= year_from], key=lambda r: (r["year"], r["tipo"]))
+    x_labels = [f"{r['year']} {r['tipo']}" if season == "both" else str(r["year"]) for r in ts_rows]
+
+    bar_colors = ["#43A047" if r["f"] > 0 else "#E0E0E0" for r in ts_rows]
+
+    loss_x, loss_y = [], []
+    for r, lbl in zip(ts_rows, x_labels):
+        if r["actual"] is not None:
+            loss = r["baseline_s"] - r["actual"]
+            loss_x.append(lbl)
+            loss_y.append(max(loss, 0))
+
+    fig2 = go.Figure()
+
+    fig2.add_trace(go.Bar(
+        x=x_labels,
+        y=[r["paton"] if r["f"] > 0 else None for r in ts_rows],
+        name="Pago paramétrico",
+        marker_color="#43A047", marker_line_width=0,
+    ))
+    fig2.add_trace(go.Bar(
+        x=x_labels,
+        y=[r["paton"] if r["f"] == 0 else None for r in ts_rows],
+        name="Sin activación",
+        marker_color="#E0E0E0", marker_line_width=0,
+    ))
+    fig2.add_trace(go.Bar(
+        x=loss_x, y=loss_y,
+        name="Pérdida real",
+        marker_color="#c62828", marker_line_width=0,
+    ))
+
+    fig2.update_layout(
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#FFFFFF",
+        xaxis=dict(gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=9), tickangle=-45),
+        yaxis=dict(title="Toneladas", gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
+        legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
+                    bgcolor="rgba(255,255,255,0)"),
+        margin=dict(l=10, r=10, t=30, b=60),
+        height=420,
+        font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
+        barmode="group",
+    )
+    st.plotly_chart(fig2, use_container_width=True)
+
+with col_ramp:
     st.subheader("Curva de pago vs anomalía SST")
 
     sst_range = np.arange(-1.5, 5.25, 0.05)
@@ -304,73 +371,9 @@ with col_chart:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-    # ── Time series chart ─────────────────────────────────────────────────────
-    st.subheader(
-        "Pago paramétrico y pérdida real por temporada",
-        help=(
-            "Barras verdes: lo que habria pagado el seguro con los parametros actuales en cada temporada historica. "
-            "Barras grises: temporadas donde el SST no supero T_ent y el seguro no se activa. "
-            "Barras rojas: perdida real de captura (baseline - captura IHMA). "
-            "Cuando una barra verde y una roja coinciden, el seguro habria compensado la perdida real. "
-            "Cuando hay rojo sin verde (o verde sin rojo), hay basis risk: el indice y la perdida real no coinciden. "
-            "Datos de captura real disponibles desde 2016."
-        )
-    )
-
-    all_years = sorted(set(r["year"] for r in rows))
-    year_from = st.select_slider(
-        "Desde", options=all_years, value=2016, label_visibility="collapsed",
-        key="year_from",
-        help="Arrastra para cambiar el año de inicio del grafico"
-    )
-
-    ts_rows = sorted([r for r in rows if r["year"] >= year_from], key=lambda r: (r["year"], r["tipo"]))
-    x_labels = [f"{r['year']} {r['tipo']}" if season == "both" else str(r["year"]) for r in ts_rows]
-
-    bar_colors = ["#43A047" if r["f"] > 0 else "#E0E0E0" for r in ts_rows]
-
-    loss_x, loss_y = [], []
-    for r, lbl in zip(ts_rows, x_labels):
-        if r["actual"] is not None:
-            loss = r["baseline_s"] - r["actual"]
-            loss_x.append(lbl)
-            loss_y.append(max(loss, 0))
-
-    fig2 = go.Figure()
-
-    fig2.add_trace(go.Bar(
-        x=x_labels,
-        y=[r["paton"] if r["f"] > 0 else None for r in ts_rows],
-        name="Pago paramétrico",
-        marker_color="#43A047", marker_line_width=0,
-    ))
-    fig2.add_trace(go.Bar(
-        x=x_labels,
-        y=[r["paton"] if r["f"] == 0 else None for r in ts_rows],
-        name="Sin activación",
-        marker_color="#E0E0E0", marker_line_width=0,
-    ))
-    fig2.add_trace(go.Bar(
-        x=loss_x, y=loss_y,
-        name="Pérdida real",
-        marker_color="#c62828", marker_line_width=0,
-    ))
-
-    fig2.update_layout(
-        paper_bgcolor="#FFFFFF",
-        plot_bgcolor="#FFFFFF",
-        xaxis=dict(gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=9), tickangle=-45),
-        yaxis=dict(title="Toneladas", gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
-        legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
-                    bgcolor="rgba(255,255,255,0)"),
-        margin=dict(l=10, r=10, t=30, b=60),
-        height=320,
-        font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
-        barmode="group",
-    )
-    st.plotly_chart(fig2, use_container_width=True)
-
-with col_table:
+# ── Table (full width below) ───────────────────────────────────────────────────
+st.divider()
+if True:
     st.subheader("Temporadas históricas (SST 2002-2025)")
 
     sorted_rows = sorted(rows, key=lambda r: (-r["year"], r["tipo"]))
