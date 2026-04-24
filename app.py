@@ -238,13 +238,12 @@ with col_bars:
     )
 
     all_years = sorted(set(r["year"] for r in rows))
-    year_from = st.select_slider(
-        "Desde", options=all_years, value=2016, label_visibility="collapsed",
-        key="year_from",
-        help="Arrastra para cambiar el año de inicio del grafico"
-    )
+    if "year_from" not in st.session_state:
+        st.session_state["year_from"] = 2016
+    year_from = st.session_state["year_from"]
 
     ts_rows = sorted([r for r in rows if r["year"] >= year_from], key=lambda r: (r["year"], r["tipo"]))
+    shared_ymax = max_pay_ton * 1.15
     x_labels = [f"{r['year']} {r['tipo']}" if season == "both" else str(r["year"]) for r in ts_rows]
 
     bar_colors = ["#43A047" if r["f"] > 0 else "#E0E0E0" for r in ts_rows]
@@ -280,15 +279,20 @@ with col_bars:
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#FFFFFF",
         xaxis=dict(gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=9), tickangle=-45),
-        yaxis=dict(title="Toneladas", gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
+        yaxis=dict(title="Toneladas", range=[0, shared_ymax],
+                   gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
         legend=dict(orientation="h", x=0, y=1.08, font=dict(size=10),
                     bgcolor="rgba(255,255,255,0)"),
-        margin=dict(l=10, r=10, t=30, b=60),
+        margin=dict(l=10, r=10, t=30, b=20),
         height=420,
         font=dict(family="Helvetica Neue, Arial, sans-serif", color="#141414"),
         barmode="group",
     )
     st.plotly_chart(fig2, use_container_width=True)
+    st.select_slider(
+        "Año de inicio", options=all_years, key="year_from",
+        help="Arrastra para cambiar el año de inicio del grafico"
+    )
 
 with col_ramp:
     st.subheader("Curva de pago vs anomalía SST")
@@ -360,7 +364,7 @@ with col_ramp:
         plot_bgcolor="#FFFFFF",
         xaxis=dict(title="Anomalía SST (°C)", range=[-1.5, 5.2],
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
-        yaxis=dict(title="Pago (ton)", range=[0, max_pay_ton * 1.15],
+        yaxis=dict(title="Pago (ton)", range=[0, shared_ymax],
                    gridcolor="#F0F0F0", linecolor="#E0E0E0", tickfont=dict(size=10)),
         legend=dict(orientation="v", x=0.01, y=0.99,
                     bgcolor="rgba(255,255,255,0.9)", bordercolor="#E0E0E0", borderwidth=1,
