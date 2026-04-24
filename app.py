@@ -11,9 +11,10 @@ BETA = -0.816
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-html, body, [class*="css"], * {
-    font-family: 'Helvetica Neue', 'Inter', Arial, sans-serif !important;
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap');
+html, body, p, span, div, label, input, button, textarea, select,
+h1, h2, h3, h4, h5, h6, [class*="css"] {
+    font-family: 'Source Sans 3', 'Source Sans Pro', Arial, sans-serif !important;
 }
 </style>
 """, unsafe_allow_html=True)
