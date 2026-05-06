@@ -3,6 +3,11 @@ How the cotizador CSVs were built
 ==================================
 Source pipeline: /home/jupyter-daniela/peru_catch_modeling/scripts/pipeline/
 
+Last update: 2026-05-05
+  cotizador_sst_by_season.csv regenerated from updated MODIS AQUA anomaly files
+  (sst_anomaly_daily_{year}.nc regenerated 2026-04-30 with revised 2005-2024 climatology).
+  BETA updated from -0.816 to -0.716 (Centro Norte, from betas_by_region.csv 2026-05-05).
+
 -----------------------------------------------------------------------
 cotizador_company_baselines.csv
 -----------------------------------------------------------------------
@@ -65,10 +70,10 @@ Note: 2024-T1 data exists in
 -----------------------------------------------------------------------
 OLS reference curve (shown in chart)
 -----------------------------------------------------------------------
-Script:  step15_trigger_design.py
+Script:  14_analysis_sst_catch_ols.py -> OUTPUTS/betas_by_region.csv
 
   loss_fraction = 1 - exp(beta * SST_anomaly)   when SST_anomaly > 0
-  beta = -0.816   (OLS M1, empresa x temporada, Centro Norte)
+  beta = -0.716   (Centro Norte, updated 2026-05-05 from betas_by_region.csv)
 
 This curve was estimated by regressing observed catch losses
 (baseline - actual) / baseline against seasonal SST anomaly,

@@ -1,49 +1,189 @@
-year,tipo,sst
-2002,T1,-1.232
-2002,T2,0.401
-2003,T1,-1.363
-2003,T2,0.159
-2004,T1,-1.206
-2004,T2,0.102
-2005,T1,-1.17
-2005,T2,-0.55
-2006,T1,-0.447
-2006,T2,0.662
-2007,T1,-1.61
-2007,T2,-1.607
-2008,T1,-0.164
-2008,T2,-0.271
-2009,T1,0.102
-2009,T2,0.044
-2010,T1,-0.619
-2010,T2,-0.997
-2011,T1,-0.107
-2011,T2,-0.148
-2012,T1,1.611
-2012,T2,-0.432
-2013,T1,-1.919
-2013,T2,-0.48
-2014,T1,0.703
-2014,T2,-0.167
-2015,T1,1.97
-2015,T2,1.419
-2016,T1,0.417
-2016,T2,0.734
-2017,T1,0.687
-2017,T2,-0.677
-2018,T1,-0.925
-2018,T2,0.671
-2019,T1,-0.3
-2019,T2,0.239
-2020,T1,-0.651
-2020,T2,-0.565
-2021,T1,-0.593
-2021,T2,-0.986
-2022,T1,-2.456
-2022,T2,0.767
-2023,T1,4.062
-2023,T2,1.391
-2024,T1,0.807
-2024,T2,0.805
-2025,T1,1.415
-2025,T2,1.022
+year,tipo,region,sst
+2002,T2,Norte,1.326
+2003,T1,Norte,-1.538
+2003,T2,Norte,0.634
+2004,T1,Norte,-1.258
+2004,T2,Norte,0.364
+2005,T1,Norte,-0.616
+2005,T2,Norte,-0.279
+2006,T1,Norte,-0.645
+2006,T2,Norte,0.597
+2007,T1,Norte,-1.464
+2007,T2,Norte,-1.553
+2008,T1,Norte,0.192
+2008,T2,Norte,-0.536
+2009,T1,Norte,0.176
+2009,T2,Norte,0.841
+2010,T1,Norte,-0.487
+2010,T2,Norte,-1.413
+2011,T1,Norte,0.392
+2011,T2,Norte,-0.746
+2012,T1,Norte,1.15
+2012,T2,Norte,-0.523
+2013,T1,Norte,-1.491
+2013,T2,Norte,0.033
+2014,T1,Norte,1.03
+2014,T2,Norte,-0.056
+2015,T1,Norte,1.864
+2015,T2,Norte,2.477
+2016,T1,Norte,0.022
+2016,T2,Norte,-0.039
+2017,T1,Norte,0.416
+2017,T2,Norte,-0.652
+2018,T1,Norte,-0.584
+2018,T2,Norte,1.465
+2019,T1,Norte,-0.113
+2019,T2,Norte,1.098
+2020,T1,Norte,-0.776
+2020,T2,Norte,-0.926
+2021,T1,Norte,-0.516
+2021,T2,Norte,-1.042
+2022,T1,Norte,-1.816
+2022,T2,Norte,-0.428
+2023,T1,Norte,3.402
+2023,T2,Norte,1.047
+2024,T1,Norte,-0.686
+2024,T2,Norte,-0.15
+2025,T1,Norte,0.144
+2025,T2,Norte,-0.207
+2002,T2,Centro Norte,0.645
+2003,T1,Centro Norte,-1.474
+2003,T2,Centro Norte,0.353
+2004,T1,Centro Norte,-1.338
+2004,T2,Centro Norte,0.047
+2005,T1,Centro Norte,-0.913
+2005,T2,Centro Norte,-0.277
+2006,T1,Centro Norte,-0.703
+2006,T2,Centro Norte,0.493
+2007,T1,Centro Norte,-1.649
+2007,T2,Centro Norte,-1.29
+2008,T1,Centro Norte,-0.277
+2008,T2,Centro Norte,-0.605
+2009,T1,Centro Norte,-0.026
+2009,T2,Centro Norte,0.474
+2010,T1,Centro Norte,-0.609
+2010,T2,Centro Norte,-1.104
+2011,T1,Centro Norte,0.059
+2011,T2,Centro Norte,-0.472
+2012,T1,Centro Norte,1.445
+2012,T2,Centro Norte,-0.201
+2013,T1,Centro Norte,-1.524
+2013,T2,Centro Norte,-0.387
+2014,T1,Centro Norte,0.781
+2014,T2,Centro Norte,-0.174
+2015,T1,Centro Norte,1.743
+2015,T2,Centro Norte,1.909
+2016,T1,Centro Norte,0.067
+2016,T2,Centro Norte,0.293
+2017,T1,Centro Norte,0.538
+2017,T2,Centro Norte,-0.377
+2018,T1,Centro Norte,-0.839
+2018,T2,Centro Norte,1.079
+2019,T1,Centro Norte,-0.205
+2019,T2,Centro Norte,0.633
+2020,T1,Centro Norte,-0.649
+2020,T2,Centro Norte,-0.779
+2021,T1,Centro Norte,-0.594
+2021,T2,Centro Norte,-0.869
+2022,T1,Centro Norte,-2.174
+2022,T2,Centro Norte,-0.415
+2023,T1,Centro Norte,3.23
+2023,T2,Centro Norte,0.92
+2024,T1,Centro Norte,-0.761
+2024,T2,Centro Norte,-0.233
+2025,T1,Centro Norte,-0.24
+2025,T2,Centro Norte,-0.348
+2002,T2,Centro Sur,-0.063
+2003,T1,Centro Sur,-0.62
+2003,T2,Centro Sur,0.369
+2004,T1,Centro Sur,-0.897
+2004,T2,Centro Sur,0.058
+2005,T1,Centro Sur,-0.461
+2005,T2,Centro Sur,-0.223
+2006,T1,Centro Sur,-0.408
+2006,T2,Centro Sur,0.203
+2007,T1,Centro Sur,-1.282
+2007,T2,Centro Sur,-1.217
+2008,T1,Centro Sur,-0.482
+2008,T2,Centro Sur,-0.144
+2009,T1,Centro Sur,0.002
+2009,T2,Centro Sur,-0.148
+2010,T1,Centro Sur,-0.397
+2010,T2,Centro Sur,-0.835
+2011,T1,Centro Sur,-0.038
+2011,T2,Centro Sur,-0.284
+2012,T1,Centro Sur,0.837
+2012,T2,Centro Sur,-0.086
+2013,T1,Centro Sur,-0.902
+2013,T2,Centro Sur,-0.109
+2014,T1,Centro Sur,0.341
+2014,T2,Centro Sur,-0.176
+2015,T1,Centro Sur,1.433
+2015,T2,Centro Sur,0.939
+2016,T1,Centro Sur,0.426
+2016,T2,Centro Sur,0.702
+2017,T1,Centro Sur,0.77
+2017,T2,Centro Sur,-0.423
+2018,T1,Centro Sur,-0.401
+2018,T2,Centro Sur,0.571
+2019,T1,Centro Sur,-0.133
+2019,T2,Centro Sur,0.202
+2020,T1,Centro Sur,-0.162
+2020,T2,Centro Sur,-0.467
+2021,T1,Centro Sur,-0.447
+2021,T2,Centro Sur,-0.57
+2022,T1,Centro Sur,-1.448
+2022,T2,Centro Sur,-0.207
+2023,T1,Centro Sur,2.61
+2023,T2,Centro Sur,0.54
+2024,T1,Centro Sur,-0.319
+2024,T2,Centro Sur,-0.031
+2025,T1,Centro Sur,-0.31
+2025,T2,Centro Sur,-0.137
+2002,T2,Todas,0.448
+2003,T1,Todas,-1.026
+2003,T2,Todas,0.414
+2004,T1,Todas,-1.091
+2004,T2,Todas,0.175
+2005,T1,Todas,-0.595
+2005,T2,Todas,-0.195
+2006,T1,Todas,-0.537
+2006,T2,Todas,0.365
+2007,T1,Todas,-1.394
+2007,T2,Todas,-1.278
+2008,T1,Todas,-0.252
+2008,T2,Todas,-0.309
+2009,T1,Todas,0.045
+2009,T2,Todas,0.279
+2010,T1,Todas,-0.482
+2010,T2,Todas,-1.041
+2011,T1,Todas,0.112
+2011,T2,Todas,-0.38
+2012,T1,Todas,1.11
+2012,T2,Todas,-0.188
+2013,T1,Todas,-1.161
+2013,T2,Todas,-0.188
+2014,T1,Todas,0.636
+2014,T2,Todas,-0.138
+2015,T1,Todas,1.62
+2015,T2,Todas,1.542
+2016,T1,Todas,0.236
+2016,T2,Todas,0.436
+2017,T1,Todas,0.685
+2017,T2,Todas,-0.406
+2018,T1,Todas,-0.552
+2018,T2,Todas,0.901
+2019,T1,Todas,-0.141
+2019,T2,Todas,0.507
+2020,T1,Todas,-0.344
+2020,T2,Todas,-0.638
+2021,T1,Todas,-0.456
+2021,T2,Todas,-0.704
+2022,T1,Todas,-1.735
+2022,T2,Todas,-0.313
+2023,T1,Todas,2.924
+2023,T2,Todas,0.763
+2024,T1,Todas,-0.471
+2024,T2,Todas,-0.061
+2025,T1,Todas,-0.147
+2025,T2,Todas,-0.229

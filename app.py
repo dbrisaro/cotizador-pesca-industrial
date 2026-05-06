@@ -6,8 +6,14 @@ from pathlib import Path
 
 st.set_page_config(page_title="Cotizador Paramétrico - Anchoveta Perú", layout="wide")
 
-DATA_DIR = Path(__file__).parent / "data"  # actuals updated 2025-04-24: added 2024-T1
-BETA = -0.816
+DATA_DIR = Path(__file__).parent / "data"
+# beta, ci_lower, ci_upper per region (OLS M1, empresa x temporada, MODIS AQUA)
+BETA_BY_REGION = {
+    "Norte":        (-0.546, -0.845, -0.246),
+    "Centro Norte": (-0.716, -0.913, -0.519),
+    "Centro Sur":   (-0.440, -0.759, -0.120),
+    "Todas":        (-0.799, -1.011, -0.588),
+}
 
 st.markdown("""
 <style>
@@ -63,8 +69,10 @@ def fmt_pct(n):
     return f"{n*100:.1f}%"
 
 
-def baseline_period(company, season, actuals_df, all_label):
+def baseline_period(company, season, actuals_df, all_label, region=None):
     df = actuals_df if company == all_label else actuals_df[actuals_df["company"] == company]
+    if region is not None and "region" in df.columns:
+        df = df[df["region"] == region]
     sub = df if season == "both" else df[df["tipo"] == season]
     if sub.empty:
         return ""
@@ -79,12 +87,19 @@ def baseline_period(company, season, actuals_df, all_label):
 sst_df, baselines_df, actuals_df = load_data()
 
 ALL_LABEL = "Todas las empresas"
-companies = [ALL_LABEL] + sorted(baselines_df["company"].tolist())
+# Companies are the same regardless of region
+companies = [ALL_LABEL] + sorted(baselines_df["company"].unique().tolist())
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("#### Empresa asegurada")
     company = st.selectbox("Empresa", companies, label_visibility="collapsed")
+
+    st.markdown("#### Región")
+    region_options = ["Todas las regiones", "Norte", "Centro Norte", "Centro Sur"]
+    region = st.selectbox("Región", region_options, index=2, label_visibility="collapsed")
+    # Map UI label to region column value in the data
+    region_key = "Todas" if region == "Todas las regiones" else region
 
     st.markdown("#### Temporada")
     season = st.selectbox(
@@ -97,6 +112,17 @@ with st.sidebar:
     )
 
     st.markdown("#### Parámetros del trigger")
+    _clim = sst_df[(sst_df["region"] == region_key) & sst_df["year"].between(2005, 2024)]
+    _sst_clim = _clim["sst"].values if season == "both" else _clim[_clim["tipo"] == season]["sst"].values
+    _season_lbl = "T1+T2" if season == "both" else season
+    _p80 = float(np.percentile(_sst_clim, 80))
+    _p90 = float(np.percentile(_sst_clim, 90))
+    _p95 = float(np.percentile(_sst_clim, 95))
+    _p99 = float(np.percentile(_sst_clim, 99))
+    st.caption(
+        f"Percentiles SST {_season_lbl} 2005-2024 ({region})  \n"
+        f"p80 **{_p80:.2f}** · p90 **{_p90:.2f}** · p95 **{_p95:.2f}** · p99 **{_p99:.2f}** °C"
+    )
     entry = st.slider(
         "Anomalía SST entrada T_ent (°C)", 0.0, 2.0, 0.5, 0.1,
         help="Temperatura a partir de la cual el seguro empieza a pagar. Si la anomalia de la temporada es menor a este valor, el pago es cero. Subirlo hace el contrato menos frecuente y mas barato.",
@@ -125,9 +151,25 @@ with st.sidebar:
         help="Multiplicador sobre la prima pura para cubrir gastos operativos y margen. Factor 1.65 = loss ratio 60.6% (de cada USD de prima, 61 centavos cubren siniestros y 39 son gastos y margen).",
     )
 
+    st.markdown("#### Curva OLS de referencia")
+    _beta_ols, _beta_ci_lo, _beta_ci_hi = BETA_BY_REGION[region_key]
+    beta = st.slider(
+        "Beta OLS",
+        min_value=float(_beta_ci_lo),
+        max_value=float(_beta_ci_hi),
+        value=float(_beta_ols),
+        step=0.001,
+        key=f"beta_{region_key}",
+        help=f"Sensibilidad captura-SST para {region}. OLS = {_beta_ols:.3f}, IC 95% [{_beta_ci_lo:.3f}, {_beta_ci_hi:.3f}]. Solo afecta la curva gris de referencia, no el pago paramétrico.",
+    )
+
     with st.expander("¿Cómo funciona el cotizador?"):
         st.markdown("""
-**Zona:** Centro Norte (11°S - 7.1°S).
+**Zonas disponibles:**
+- Norte (> 7.1°S)
+- Centro Norte (7.1°S – 11°S)
+- Centro Sur (11°S – 15.8°S)
+- Todas las regiones (combinadas)
 
 **Índice:** anomalía SST promedio de la temporada (MODIS AQUA 2002-2025).
 Positivo = mar más cálido que lo normal.
@@ -144,16 +186,25 @@ Entre ambos crece linealmente:
         """)
 
 # ── Compute ───────────────────────────────────────────────────────────────────
+# Filter all data frames to the selected region
+sst_region      = sst_df[sst_df["region"] == region_key]
+baselines_region = baselines_df[baselines_df["region"] == region_key]
+actuals_region  = actuals_df[actuals_df["region"] == region_key]
+
 if company == ALL_LABEL:
-    bl_t1 = baselines_df["baseline_t1"].sum()
-    bl_t2 = baselines_df["baseline_t2"].sum()
-    co_actuals = actuals_df.groupby(["year", "tipo"])["actual_ton"].sum().to_dict()
+    bl_t1 = baselines_region["baseline_t1"].sum()
+    bl_t2 = baselines_region["baseline_t2"].sum()
+    co_actuals = actuals_region.groupby(["year", "tipo"])["actual_ton"].sum().to_dict()
 else:
-    bl_row = baselines_df[baselines_df["company"] == company].iloc[0]
-    bl_t1 = bl_row["baseline_t1"]
-    bl_t2 = bl_row["baseline_t2"]
+    bl_row = baselines_region[baselines_region["company"] == company]
+    if bl_row.empty:
+        bl_t1, bl_t2 = 0.0, 0.0
+    else:
+        bl_row = bl_row.iloc[0]
+        bl_t1 = bl_row["baseline_t1"]
+        bl_t2 = bl_row["baseline_t2"]
     co_actuals = (
-        actuals_df[actuals_df["company"] == company]
+        actuals_region[actuals_region["company"] == company]
         .set_index(["year", "tipo"])["actual_ton"].to_dict()
     )
 
@@ -165,13 +216,13 @@ if season == "both":
     rows = [
         {"year": int(r["year"]), "tipo": r["tipo"], "sst": r["sst"],
          "baseline_s": bl_t1 if r["tipo"] == "T1" else bl_t2}
-        for _, r in sst_df.iterrows()
+        for _, r in sst_region.iterrows()
     ]
 else:
     bl_s = bl_t1 if season == "T1" else bl_t2
     rows = [
         {"year": int(r["year"]), "tipo": r["tipo"], "sst": r["sst"], "baseline_s": bl_s}
-        for _, r in sst_df[sst_df["tipo"] == season].iterrows()
+        for _, r in sst_region[sst_region["tipo"] == season].iterrows()
     ]
 
 for r in rows:
@@ -191,7 +242,7 @@ pure_prem_usd = aal_ton * price
 comm_prem_usd = pure_prem_usd * factor
 load_usd      = comm_prem_usd - pure_prem_usd
 load_pct      = 1 - 1 / factor
-period_label  = baseline_period(company, season, actuals_df, ALL_LABEL)
+period_label  = baseline_period(company, season, actuals_region, ALL_LABEL, region=region_key)
 
 # ── Header ───────────────────────────────────────────────────────────────────
 st.subheader("Cotizador Paramétrico - Seguro de Captura de Anchoveta")
@@ -309,7 +360,7 @@ with col_ramp:
 
     sst_range = np.arange(-1.5, 5.25, 0.05)
     ramp_y    = [baseline * cov * payout_frac(s, entry, exit_) for s in sst_range]
-    ols_y     = [baseline * cov * ols_loss_frac(s, BETA) for s in sst_range]
+    ols_y     = [baseline * cov * ols_loss_frac(s, beta) for s in sst_range]
 
     fig = go.Figure()
 
@@ -438,4 +489,4 @@ if True:
     )
     st.dataframe(styled, use_container_width=True, hide_index=True, height=420)
 
-    st.caption("Captura real disponible 2015-2025. SST: MODIS AQUA Centro Norte.")
+    st.caption(f"Captura real disponible 2015-2025. SST: MODIS AQUA {region}.")
